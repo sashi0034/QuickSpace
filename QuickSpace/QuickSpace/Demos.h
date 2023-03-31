@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Actor.h"
+#include "CoroutineManager.h"
 
 namespace QuickSpace
 {
@@ -45,5 +46,16 @@ namespace QuickSpace
 	public:
 		Demo2();
 		void Update() override;
+	};
+
+	class Demo3 : public IActor
+	{
+	public:
+		Demo3();
+		void Update() override;
+		CoroTask TestCoro1(CoroTaskYield& yield, int count);
+		CoroTask TestCoro2(CoroTaskYield& yield);
+	private:
+		std::shared_ptr<CoroutineElement> m_task;
 	};
 }

@@ -1,11 +1,14 @@
 ﻿#include "../stdafx.h"
 #include "Demos.h"
 #include "ActorManager.h"
+#include "CoroUtil.h"
+#include "GameRoot.h"
 
 void QuickSpace::Demos::InitDemos()
 {
-	ActorManager::Global().BirthAs<Demo1>(new Demo1());
-	ActorManager::Global().Birth(new Demo2());
+	GameRoot::Global().GetActorManager().BirthAs<Demo1>(new Demo1());
+	GameRoot::Global().GetActorManager().Birth(new Demo2());
+	GameRoot::Global().GetActorManager().Birth(new Demo3());
 }
 
 void QuickSpace::Demo1::TestPrint()
@@ -81,4 +84,29 @@ void QuickSpace::Demo2::Update()
 
 	// プレイヤーを描く | Draw the player
 	emoji.scaled(0.75).mirrored(isPlayerFacingRight).drawAt(playerPosX, 540);
+}
+
+
+QuickSpace::Demo3::Demo3()
+{
+	m_task = GameRoot::Global().GetCoroutineManager().Start([&](auto&& yield){TestCoro1(yield, 12); });
+	GameRoot::Global().GetCoroutineManager().Start([&](auto&& yield){TestCoro2(yield); });
+}
+
+void QuickSpace::Demo3::Update()
+{}
+
+QuickSpace::CoroTask QuickSpace::Demo3::TestCoro1(CoroTaskYield& yield, int count)
+{
+	for (int i=0; i<count; ++i)
+	{
+		Print(U"count: {}"_fmt(i));
+		CoroUtil::WaitForTime(yield, 0.5);
+	}
+}
+
+QuickSpace::CoroTask QuickSpace::Demo3::TestCoro2(CoroTaskYield& yield)
+{
+	CoroUtil::WaitForCoro(yield, m_task);
+	Print(U"finished task");
 }

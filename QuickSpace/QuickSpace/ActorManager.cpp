@@ -3,13 +3,6 @@
 
 namespace QuickSpace
 {
-	ActorManager ActorManager::globalInstance = ActorManager{};
-
-	ActorManager& ActorManager::Global()
-	{
-		return globalInstance;
-	}
-
 	void ActorManager::Update()
 	{
 		for (auto&& actor : m_actorList)

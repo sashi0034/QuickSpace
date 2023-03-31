@@ -6,7 +6,6 @@ namespace QuickSpace
 	class ActorManager
 	{
 	public:
-		static ActorManager& Global();
 		void Update();
 		void Clear();
 		void Birth(IActor* actor);
@@ -18,6 +17,5 @@ namespace QuickSpace
 		}
 	private:
 		std::vector<std::shared_ptr<IActor>> m_actorList{};
-		static ActorManager globalInstance;
 	};
 }
