@@ -25,6 +25,7 @@ namespace QuickSpace
 	public:
 		std::shared_ptr<CoroElem> Start(std::function<void(CoroTaskYield&)> task);
 		void Update();
+		static CoroManager& Global();
 	private:
 		std::vector<CoroElemShared> m_coroList{};
 	};

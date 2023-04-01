@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include "../Actor.h"
+#include "../ActorBase.h"
 #include "../CoroManager.h"
 
 namespace QuickSpace::Demos
 {
 	void InitDemos();
 
-	class Demo1 : public IActor
+	class Demo1 : public ActorBase
 	{
 		// 画像ファイルからテクスチャを作成する | Create a texture from an image file
 		const Texture texture{ U"example/windmill.png" };
@@ -15,7 +15,7 @@ namespace QuickSpace::Demos
 		void Update() override;
 	};
 
-	class Demo2 : public IActor
+	class Demo2 : public ActorBase
 	{
 		// 絵文字からテクスチャを作成する | Create a texture from an emoji
 		const Texture emoji{ U"🦖"_emoji };
@@ -45,7 +45,7 @@ namespace QuickSpace::Demos
 		void Update() override;
 	};
 
-	class Demo3 : public IActor
+	class Demo3 : public ActorBase
 	{
 	public:
 		Demo3();
@@ -54,5 +54,14 @@ namespace QuickSpace::Demos
 		CoroTask TestCoro2(CoroTaskYield& yield);
 	private:
 		std::shared_ptr<CoroElem> m_task;
+	};
+
+	class Demo4 : public ActorBase
+	{
+		const PixelShader ps = HLSL{ U"example/shader/hlsl/grayscale.hlsl", U"PS" }
+		| GLSL{ U"example/shader/glsl/grayscale.frag", {{U"PSConstants2D", 0}} };
+	public:
+		void Update() override;
+		float OrderPriority() override;
 	};
 }

@@ -5,14 +5,19 @@
 
 namespace QuickSpace
 {
-	std::unique_ptr<GameRoot> GameRoot::globalInstance = std::make_unique<GameRoot>();
+	std::unique_ptr<GameRoot> GameRoot::globalInstance{};
 
 	GameRoot& GameRoot::Global()
 	{
 		return *globalInstance;
 	}
 
-	void GameRoot::EndGlobal()
+	void GameRoot::CreateGlobal()
+	{
+		globalInstance.reset(new GameRoot());
+	}
+
+	void GameRoot::DestroyGlobal()
 	{
 		globalInstance.reset(nullptr);
 	}
@@ -36,5 +41,10 @@ namespace QuickSpace
 	CoroManager& GameRoot::GetCoroutineManager()
 	{
 		return m_coroutineManager;
+	}
+
+	GameAsset& GameRoot::GetAsset()
+	{
+		return m_asset;
 	}
 }

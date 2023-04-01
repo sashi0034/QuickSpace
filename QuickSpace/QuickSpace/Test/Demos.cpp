@@ -6,6 +6,7 @@
 
 void QuickSpace::Demos::InitDemos()
 {
+	GameRoot::Global().GetActorManager().Birth(new Demo4());
 	GameRoot::Global().GetActorManager().BirthAs<Demo1>(new Demo1());
 	GameRoot::Global().GetActorManager().Birth(new Demo2());
 	GameRoot::Global().GetActorManager().Birth(new Demo3());
@@ -109,4 +110,26 @@ QuickSpace::CoroTask QuickSpace::Demos::Demo3::TestCoro2(CoroTaskYield& yield)
 {
 	CoroUtil::WaitForCoro(yield, m_task);
 	Print(U"finished task");
+}
+
+void QuickSpace::Demos::Demo4::Update()
+{
+	const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
+
+	const uint64 t = Time::GetMillisec();
+	const int32 n = (t / 250 % 4);
+
+	auto&& texture = GameAsset::Instance().pondelion_32x32;
+
+	(void)texture(32 * n, 0, 32, 32)
+		.scaled(2).draw(100, 100);
+
+	const ScopedCustomShader2D shader{ ps };
+	(void)texture(32 * n, 0, 32, 32)
+		.scaled(3).draw(100, 200);
+}
+
+float QuickSpace::Demos::Demo4::OrderPriority()
+{
+	return 100.0f;
 }

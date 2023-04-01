@@ -1,14 +1,15 @@
 ﻿#pragma once
-#include "Actor.h"
+#include "ActorBase.h"
 
 namespace QuickSpace
 {
 	class ActorManager
 	{
 	public:
+		static ActorManager& Global();
 		void Update();
 		void Clear();
-		void Birth(IActor* actor);
+		void Birth(ActorBase* actor);
 		template <typename T> std::shared_ptr<T> BirthAs(T* actor)
 		{
 			auto product = std::shared_ptr<T>(actor);
@@ -16,6 +17,6 @@ namespace QuickSpace
 			return product;
 		}
 	private:
-		std::vector<std::shared_ptr<IActor>> m_actorList{};
+		std::vector<std::shared_ptr<ActorBase>> m_actorList{};
 	};
 }

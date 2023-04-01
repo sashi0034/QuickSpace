@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ActorManager.h"
 #include "CoroManager.h"
+#include "GameAsset.h"
 
 namespace QuickSpace
 {
@@ -8,16 +9,19 @@ namespace QuickSpace
 	{
 	public:
 		static GameRoot& Global();
-		static void EndGlobal();
+		static void CreateGlobal();
+		static void DestroyGlobal();
 
 		void Init();
 		void Update();
 
 		ActorManager& GetActorManager();
 		CoroManager& GetCoroutineManager();
+		GameAsset& GetAsset();
 	private:
-		ActorManager m_actorManager;
-		CoroManager m_coroutineManager;
+		ActorManager m_actorManager{};
+		CoroManager m_coroutineManager{};
+		GameAsset m_asset{};
 		static std::unique_ptr<GameRoot> globalInstance;
 	};
 }

@@ -8,6 +8,7 @@ void Main()
 	// 背景の色を設定する | Set the background color
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 
+	GameRoot::CreateGlobal();
 	GameRoot::Global().Init();
 
 	while (System::Update())
@@ -15,5 +16,5 @@ void Main()
 		GameRoot::Global().Update();
 	}
 
-	GameRoot::EndGlobal();
+	GameRoot::DestroyGlobal();
 }

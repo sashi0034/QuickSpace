@@ -118,8 +118,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="QuickSpace\Actor.cpp" />
+    <ClCompile Include="QuickSpace\ActorBase.cpp" />
     <ClCompile Include="QuickSpace\ActorManager.cpp" />
+    <ClCompile Include="QuickSpace\GameAsset.cpp" />
     <ClCompile Include="QuickSpace\CoroUtil.cpp" />
     <ClCompile Include="QuickSpace\CoroManager.cpp">
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -477,8 +478,9 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="QuickSpace\Actor.h" />
+    <ClInclude Include="QuickSpace\ActorBase.h" />
     <ClInclude Include="QuickSpace\ActorManager.h" />
+    <ClInclude Include="QuickSpace\GameAsset.h" />
     <ClInclude Include="QuickSpace\CoroUtil.h" />
     <ClInclude Include="QuickSpace\CoroManager.h" />
     <ClInclude Include="QuickSpace\GameRoot.h" />
@@ -566,6 +568,9 @@
     <None Include="App\example\shader\hlsl\terrain_normal.hlsl">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App\asset\image\pondelion_32x32.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

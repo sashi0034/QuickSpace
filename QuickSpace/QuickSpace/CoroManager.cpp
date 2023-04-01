@@ -1,6 +1,8 @@
 ﻿#include "../stdafx.h"
 #include "CoroManager.h"
 
+#include "GameRoot.h"
+
 namespace QuickSpace
 {
 	CoroElem::CoroElem(CoroTaskCall* task) :
@@ -47,5 +49,10 @@ namespace QuickSpace
 			else
 				coro->Kill();
 		}
+	}
+
+	CoroManager& CoroManager::Global()
+	{
+		return GameRoot::Global().GetCoroutineManager();
 	}
 }
