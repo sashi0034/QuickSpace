@@ -29,7 +29,7 @@ namespace QuickSpace
 		}
 	}
 
-	CoroTask CoroUtil::WaitForCoro(CoroTaskYield& yield, std::shared_ptr<CoroutineElement> coro)
+	CoroTask CoroUtil::WaitForCoro(CoroTaskYield& yield, std::shared_ptr<CoroElem> coro)
 	{
 		WaitForFalse(yield, [coro](){return coro->IsAlive(); });
 	}

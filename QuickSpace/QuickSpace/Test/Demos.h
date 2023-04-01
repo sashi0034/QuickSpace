@@ -1,13 +1,10 @@
 ﻿#pragma once
-#include "Actor.h"
-#include "CoroutineManager.h"
+#include "../Actor.h"
+#include "../CoroManager.h"
 
-namespace QuickSpace
+namespace QuickSpace::Demos
 {
-	namespace Demos
-	{
-		void InitDemos();
-	}
+	void InitDemos();
 
 	class Demo1 : public IActor
 	{
@@ -56,6 +53,6 @@ namespace QuickSpace
 		CoroTask TestCoro1(CoroTaskYield& yield, int count);
 		CoroTask TestCoro2(CoroTaskYield& yield);
 	private:
-		std::shared_ptr<CoroutineElement> m_task;
+		std::shared_ptr<CoroElem> m_task;
 	};
 }

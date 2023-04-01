@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "ActorManager.h"
-#include "CoroutineManager.h"
+#include "CoroManager.h"
 
 namespace QuickSpace
 {
@@ -14,10 +14,10 @@ namespace QuickSpace
 		void Update();
 
 		ActorManager& GetActorManager();
-		CoroutineManager& GetCoroutineManager();
+		CoroManager& GetCoroutineManager();
 	private:
 		ActorManager m_actorManager;
-		CoroutineManager m_coroutineManager;
+		CoroManager m_coroutineManager;
 		static std::unique_ptr<GameRoot> globalInstance;
 	};
 }

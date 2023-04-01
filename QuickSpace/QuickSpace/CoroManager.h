@@ -6,10 +6,10 @@ namespace QuickSpace
 	using CoroTaskCall = boost::coroutines2::coroutine<CoroTask>::pull_type;
 	using CoroTaskYield = boost::coroutines2::coroutine<CoroTask>::push_type;
 
-	class CoroutineElement
+	class CoroElem
 	{
 	public:
-		explicit CoroutineElement(CoroTaskCall* task);
+		explicit CoroElem(CoroTaskCall* task);
 		[[nodiscard]] CoroTaskCall& GetTask();
 		void Kill();
 		bool IsAlive() const;
@@ -18,12 +18,14 @@ namespace QuickSpace
 		bool m_isDead = false;
 	};
 
-	class CoroutineManager
+	using CoroElemShared = std::shared_ptr<CoroElem>;
+
+	class CoroManager
 	{
 	public:
-		std::shared_ptr<CoroutineElement> Start(std::function<void(CoroTaskYield&)> task);
+		std::shared_ptr<CoroElem> Start(std::function<void(CoroTaskYield&)> task);
 		void Update();
 	private:
-		std::vector<std::shared_ptr<CoroutineElement>> m_coroList{};
+		std::vector<CoroElemShared> m_coroList{};
 	};
 }

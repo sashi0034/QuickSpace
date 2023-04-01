@@ -1,8 +1,8 @@
-﻿#include "../stdafx.h"
+﻿#include "../../stdafx.h"
 #include "Demos.h"
-#include "ActorManager.h"
-#include "CoroUtil.h"
-#include "GameRoot.h"
+#include "../ActorManager.h"
+#include "../CoroUtil.h"
+#include "../GameRoot.h"
 
 void QuickSpace::Demos::InitDemos()
 {
@@ -11,24 +11,24 @@ void QuickSpace::Demos::InitDemos()
 	GameRoot::Global().GetActorManager().Birth(new Demo3());
 }
 
-void QuickSpace::Demo1::TestPrint()
+void QuickSpace::Demos::Demo1::TestPrint()
 {
 	Print(U"test Demo1");
 }
 
-void QuickSpace::Demo1::Update()
+void QuickSpace::Demos::Demo1::Update()
 {
 	// テクスチャを描く | Draw the texture
 	texture.draw(20, 20);
 
 }
 
-QuickSpace::Demo2::Demo2()
+QuickSpace::Demos::Demo2::Demo2()
 {
 	font.addFallback(emojiFont);
 }
 
-void QuickSpace::Demo2::Update()
+void QuickSpace::Demos::Demo2::Update()
 {
 
 	// テキストを描く | Draw text
@@ -87,16 +87,16 @@ void QuickSpace::Demo2::Update()
 }
 
 
-QuickSpace::Demo3::Demo3()
+QuickSpace::Demos::Demo3::Demo3()
 {
 	m_task = GameRoot::Global().GetCoroutineManager().Start([&](auto&& yield){TestCoro1(yield, 12); });
 	GameRoot::Global().GetCoroutineManager().Start([&](auto&& yield){TestCoro2(yield); });
 }
 
-void QuickSpace::Demo3::Update()
+void QuickSpace::Demos::Demo3::Update()
 {}
 
-QuickSpace::CoroTask QuickSpace::Demo3::TestCoro1(CoroTaskYield& yield, int count)
+QuickSpace::CoroTask QuickSpace::Demos::Demo3::TestCoro1(CoroTaskYield& yield, int count)
 {
 	for (int i=0; i<count; ++i)
 	{
@@ -105,7 +105,7 @@ QuickSpace::CoroTask QuickSpace::Demo3::TestCoro1(CoroTaskYield& yield, int coun
 	}
 }
 
-QuickSpace::CoroTask QuickSpace::Demo3::TestCoro2(CoroTaskYield& yield)
+QuickSpace::CoroTask QuickSpace::Demos::Demo3::TestCoro2(CoroTaskYield& yield)
 {
 	CoroUtil::WaitForCoro(yield, m_task);
 	Print(U"finished task");

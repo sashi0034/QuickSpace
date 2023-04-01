@@ -1,7 +1,7 @@
 ﻿#include "../stdafx.h"
 #include "GameRoot.h"
 
-#include "Demos.h"
+#include "Test/Demos.h"
 
 namespace QuickSpace
 {
@@ -33,7 +33,7 @@ namespace QuickSpace
 		return m_actorManager;
 	}
 
-	CoroutineManager& GameRoot::GetCoroutineManager()
+	CoroManager& GameRoot::GetCoroutineManager()
 	{
 		return m_coroutineManager;
 	}

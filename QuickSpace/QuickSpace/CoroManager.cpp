@@ -1,35 +1,35 @@
 ﻿#include "../stdafx.h"
-#include "CoroutineManager.h"
+#include "CoroManager.h"
 
 namespace QuickSpace
 {
-	CoroutineElement::CoroutineElement(CoroTaskCall* task) :
+	CoroElem::CoroElem(CoroTaskCall* task) :
 		m_task(std::unique_ptr<CoroTaskCall>(task))
 	{}
 
-	CoroTaskCall& CoroutineElement::GetTask()
+	CoroTaskCall& CoroElem::GetTask()
 	{
 		return *m_task;
 	}
 
-	void CoroutineElement::Kill()
+	void CoroElem::Kill()
 	{
 		m_isDead = true;
 	}
 
-	bool CoroutineElement::IsAlive() const
+	bool CoroElem::IsAlive() const
 	{
 		return !m_isDead;
 	}
 
-	std::shared_ptr<CoroutineElement> CoroutineManager::Start(std::function<void(CoroTaskYield&)> task)
+	std::shared_ptr<CoroElem> CoroManager::Start(std::function<void(CoroTaskYield&)> task)
 	{
-		auto product = std::make_shared<CoroutineElement>(new CoroTaskCall(task));
+		auto product = std::make_shared<CoroElem>(new CoroTaskCall(task));
 		m_coroList.push_back(product);
 		return product;
 	}
 
-	void CoroutineManager::Update()
+	void CoroManager::Update()
 	{
 		for (int i = m_coroList.size() - 1; i >= 0; i--)
 		{

@@ -1,6 +1,4 @@
 ﻿#include "stdafx.h"
-#include "QuickSpace/ActorManager.h"
-#include "QuickSpace/Demos.h"
 #include "QuickSpace/GameRoot.h"
 
 using namespace QuickSpace;
