@@ -26,6 +26,12 @@ namespace QuickSpace
 		return *m_children;
 	}
 
+	void ActorBase::Update()
+	{
+		if (m_children.get() == nullptr) return;
+		m_children->Update();
+	}
+
 	float ActorBase::OrderPriority()
 	{
 		return 0;

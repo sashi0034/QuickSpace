@@ -5,6 +5,12 @@
 
 namespace QuickSpace
 {
+	namespace Play
+	{
+		class PlayManager;
+	}
+	using namespace Play;
+
 	class GameRoot
 	{
 	public:
@@ -12,16 +18,23 @@ namespace QuickSpace
 		static void CreateGlobal();
 		static void DestroyGlobal();
 
-		void Init();
+		GameRoot();
+
+		void StartGame();
 		void Update();
 
 		ActorManager& GetActorManager();
 		CoroManager& GetCoroutineManager();
 		GameAsset& GetAsset();
+		PlayManager& GetPlayRoot();
 	private:
 		ActorManager m_actorManager{};
 		CoroManager m_coroutineManager{};
 		GameAsset m_asset{};
+		std::shared_ptr<PlayManager> m_playRoot{};
+
+		CoroTask performGame(CoroTaskYield& yield);
+
 		static std::unique_ptr<GameRoot> globalInstance;
 	};
 }

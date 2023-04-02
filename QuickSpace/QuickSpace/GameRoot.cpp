@@ -1,6 +1,6 @@
 ﻿#include "../stdafx.h"
 #include "GameRoot.h"
-
+#include "Play/PlayManager.h"
 #include "Test/Demos.h"
 
 namespace QuickSpace
@@ -22,9 +22,14 @@ namespace QuickSpace
 		globalInstance.reset(nullptr);
 	}
 
-	void GameRoot::Init()
+	GameRoot::GameRoot()
 	{
-		Demos::InitDemos();
+		m_playRoot = m_actorManager.BirthAs(new PlayManager());
+	}
+
+	void GameRoot::StartGame()
+	{
+		m_coroutineManager.Start([this](auto&& yield){performGame(yield);});
 	}
 
 	void GameRoot::Update()
@@ -46,5 +51,20 @@ namespace QuickSpace
 	GameAsset& GameRoot::GetAsset()
 	{
 		return m_asset;
+	}
+
+	PlayManager& GameRoot::GetPlayRoot()
+	{
+		return *m_playRoot;
+	}
+
+	CoroTask GameRoot::performGame(CoroTaskYield& yield)
+	{
+		// Demos::InitDemos();
+		m_playRoot->StartPlay();
+		while (true)
+		{
+			yield();
+		}
 	}
 }

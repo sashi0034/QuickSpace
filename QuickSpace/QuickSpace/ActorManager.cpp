@@ -37,7 +37,7 @@ namespace QuickSpace
 			auto&& actor = m_actorList[i];
 			if (actor->IsActive() == false) continue;;
 			actor->Update();
-			if (actor->HasChildren()) actor->AsParent().Update();
+			// if (actor->HasChildren()) actor->AsParent().Update();
 		}
 	}
 

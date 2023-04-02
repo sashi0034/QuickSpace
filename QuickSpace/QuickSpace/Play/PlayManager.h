@@ -4,13 +4,16 @@
 
 namespace QuickSpace::Play
 {
-	class PlayManager final : ActorBase
+	class PlayBg;
+
+	class PlayManager final : public ActorBase
 	{
 	public:
+		PlayManager();
 		void StartPlay();
 		void Update() override;
 	private:
-		bool m_isActive = false;
+		std::shared_ptr<PlayBg> m_playBg;
 		CoroTask performPlay(CoroTaskYield& yield);
 	};
 

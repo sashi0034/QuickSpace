@@ -8,7 +8,7 @@ namespace QuickSpace
 	{
 	public:
 		virtual ~ActorBase() = default;
-		virtual void Update(){};
+		virtual void Update();
 		virtual float OrderPriority();
 
 		void SetActive(bool isActive);

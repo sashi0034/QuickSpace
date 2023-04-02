@@ -99,6 +99,7 @@ QuickSpace::Demos::Demo3::Demo3()
 void QuickSpace::Demos::Demo3::Update()
 {
 	emoji.drawAt(30, 30);
+	ActorBase::Update();
 }
 
 QuickSpace::CoroTask QuickSpace::Demos::Demo3::TestCoro1(CoroTaskYield& yield, int count)
