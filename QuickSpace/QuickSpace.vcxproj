@@ -576,6 +576,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\asset\image\bg_savannah.png" />
     <Content Include="App\asset\image\tex_savannah.png" />
     <Content Include="App\asset\image\pondelion_32x32.png" />
   </ItemGroup>

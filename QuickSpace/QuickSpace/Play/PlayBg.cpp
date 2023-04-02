@@ -7,8 +7,10 @@ namespace QuickSpace::Play
 {
 	void PlayBg::Update()
 	{
-		// シーンのサイズぴったりにマッピングして描画
-		Util::FillTexture(GameAsset::Instance().tex_savannah, 128.0f, Scene::Size(), Vec2{0, 0});
+		GameAsset::Instance().bg_savannah.resized(Scene::Size()).drawAt(Scene::Center());
+
+		auto size = Size{960, 960};
+		Util::FillTexture(GameAsset::Instance().tex_savannah, (size / 10).x, size, Scene::Center() - size / 2);
 
 		ActorBase::Update();
 	}
