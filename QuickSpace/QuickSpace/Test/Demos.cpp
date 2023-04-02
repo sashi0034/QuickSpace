@@ -1,15 +1,18 @@
 ﻿#include "../../stdafx.h"
 #include "Demos.h"
-#include "../ActorManager.h"
 #include "../CoroUtil.h"
 #include "../GameRoot.h"
 
 void QuickSpace::Demos::InitDemos()
 {
 	GameRoot::Global().GetActorManager().Birth(new Demo4());
-	GameRoot::Global().GetActorManager().BirthAs<Demo1>(new Demo1());
+	auto demo3 = GameRoot::Global().GetActorManager().BirthAs(new Demo3());
+
+	auto demo1 = GameRoot::Global().GetActorManager().BirthAs<Demo1>(new Demo1());
+	demo1->SetParent(demo3);
+
 	GameRoot::Global().GetActorManager().Birth(new Demo2());
-	GameRoot::Global().GetActorManager().Birth(new Demo3());
+
 }
 
 void QuickSpace::Demos::Demo1::TestPrint()
@@ -95,13 +98,16 @@ QuickSpace::Demos::Demo3::Demo3()
 }
 
 void QuickSpace::Demos::Demo3::Update()
-{}
+{
+	emoji.drawAt(30, 30);
+}
 
 QuickSpace::CoroTask QuickSpace::Demos::Demo3::TestCoro1(CoroTaskYield& yield, int count)
 {
 	for (int i=0; i<count; ++i)
 	{
 		Print(U"count: {}"_fmt(i));
+		SetActive(i % 2 == 0);
 		CoroUtil::WaitForTime(yield, 0.5);
 	}
 }
@@ -110,6 +116,10 @@ QuickSpace::CoroTask QuickSpace::Demos::Demo3::TestCoro2(CoroTaskYield& yield)
 {
 	CoroUtil::WaitForCoro(yield, m_task);
 	Print(U"finished task");
+	SetActive(true);
+	CoroUtil::WaitForTime(yield, 1);
+	Kill();
+	Print(U"killed");
 }
 
 void QuickSpace::Demos::Demo4::Update()

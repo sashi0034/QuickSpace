@@ -53,6 +53,7 @@ namespace QuickSpace::Demos
 		CoroTask TestCoro1(CoroTaskYield& yield, int count);
 		CoroTask TestCoro2(CoroTaskYield& yield);
 	private:
+		const Texture emoji{ U"🐣"_emoji };
 		std::shared_ptr<CoroElem> m_task;
 	};
 
