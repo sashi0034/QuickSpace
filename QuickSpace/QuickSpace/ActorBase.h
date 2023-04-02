@@ -2,12 +2,7 @@
 
 namespace QuickSpace
 {
-	struct ActorBaseInternal
-	{
-		// Managerでこの状態を親に追従させる際などで使用
-		bool HasFollowedParent{};
-		bool IsActiveInHierarchy{};
-	};
+	class ActorManager;
 
 	class ActorBase
 	{
@@ -22,15 +17,11 @@ namespace QuickSpace
 		void Kill();
 		bool IsDead() const;
 
-		void SetParent(std::weak_ptr<ActorBase> parent);
-		std::weak_ptr<ActorBase>& GetParent();
-
-		ActorBaseInternal& Internal();
+		bool HasChildren() const;
+		[[nodiscard]] ActorManager& AsParent();
 	private:
 		bool m_isActive = true;
 		bool m_isAlive = true;
-		std::weak_ptr<ActorBase> m_parent{};
-
-		ActorBaseInternal m_internal{};
+		std::unique_ptr<ActorManager> m_children;
 	};
 }

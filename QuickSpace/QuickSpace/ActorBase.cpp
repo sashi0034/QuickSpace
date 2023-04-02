@@ -1,5 +1,6 @@
 ﻿#include "../stdafx.h"
 #include "ActorBase.h"
+#include "ActorManager.h"
 
 namespace QuickSpace
 {
@@ -13,19 +14,16 @@ namespace QuickSpace
 		return !m_isAlive;
 	}
 
-	void ActorBase::SetParent(std::weak_ptr<ActorBase> parent)
+
+	bool ActorBase::HasChildren() const
 	{
-		m_parent = parent;
+		return m_children.get() != nullptr;
 	}
 
-	std::weak_ptr<ActorBase>& ActorBase::GetParent()
+	ActorManager& ActorBase::AsParent()
 	{
-		return m_parent;
-	}
-
-	ActorBaseInternal& ActorBase::Internal()
-	{
-		return m_internal;
+		if (m_children.get() == nullptr) m_children.reset(new ActorManager());
+		return *m_children;
 	}
 
 	float ActorBase::OrderPriority()

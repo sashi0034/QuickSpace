@@ -8,8 +8,7 @@ void QuickSpace::Demos::InitDemos()
 	GameRoot::Global().GetActorManager().Birth(new Demo4());
 	auto demo3 = GameRoot::Global().GetActorManager().BirthAs(new Demo3());
 
-	auto demo1 = GameRoot::Global().GetActorManager().BirthAs<Demo1>(new Demo1());
-	demo1->SetParent(demo3);
+	demo3->AsParent().BirthAs<Demo1>(new Demo1());
 
 	GameRoot::Global().GetActorManager().Birth(new Demo2());
 

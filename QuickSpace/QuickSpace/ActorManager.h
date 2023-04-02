@@ -18,7 +18,6 @@ namespace QuickSpace
 		}
 	private:
 		std::vector<std::shared_ptr<ActorBase>> m_actorList{};
-		void followActorParent(std::shared_ptr<ActorBase>& actor);
 		void sortActorList();
 	};
 }
