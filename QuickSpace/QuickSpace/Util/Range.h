@@ -9,11 +9,17 @@ namespace QuickSpace::Util
 		const T m_Min;
 		const T m_Max;
 	public:
-		Range(T minInclusive, T maxInclusive)
-		: m_Min(minInclusive), m_Max(maxInclusive)
+		Range(T minInclusive, T maxInclusive) :
+			m_Min(minInclusive), m_Max(maxInclusive)
 		{
 			assert(minInclusive <= maxInclusive);
 		}
+		static Range<T> FromSort(T value1, T value2)
+		{
+			if (value1 > value2) return Range<T>(value2, value1);
+			return Range<T>(value1, value2);
+		}
+
 		T GetDiff() const{
 			return m_Max - m_Min;
 		}

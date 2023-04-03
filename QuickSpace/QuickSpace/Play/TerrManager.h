@@ -1,16 +1,16 @@
 ﻿#pragma once
-#include "TerritoryEdge.h"
+#include "TerrEdge.h"
 #include "QuickSpace/ActorBase.h"
 
 namespace QuickSpace::Play
 {
-	class TerritoryManager : public ActorBase
+	class TerrManager : public ActorBase
 	{
 	public:
 		void Init();
 		void Update() override;
-		Array<TerritoryEdge>& List();
+		Array<TerrEdgeRef>& List();
 	private:
-		Array<TerritoryEdge> m_edgeList{};
+		Array<TerrEdgeRef> m_edgeList{};
 	};
 }

@@ -3,7 +3,7 @@
 
 #include "PlayBg.h"
 #include "Player.h"
-#include "TerritoryManager.h"
+#include "TerrManager.h"
 #include "QuickSpace/ActorManager.h"
 #include "QuickSpace/GameRoot.h"
 
@@ -13,7 +13,7 @@ namespace QuickSpace::Play
 	{
 		m_player = AsParent().BirthAs(new Player());
 		m_playBg = AsParent().BirthAs(new PlayBg());
-		m_territory = AsParent().BirthAs(new TerritoryManager());
+		m_territory = AsParent().BirthAs(new TerrManager());
 	}
 
 	void PlayManager::init()
@@ -40,7 +40,7 @@ namespace QuickSpace::Play
 		return *m_player;
 	}
 
-	TerritoryManager& PlayManager::Territory() const
+	TerrManager& PlayManager::Territory() const
 	{
 		return *m_territory;
 	}

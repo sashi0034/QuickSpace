@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "TerritoryEdge.h"
+#include "TerrEdge.h"
 #include "QuickSpace/ActorBase.h"
 
 namespace QuickSpace::Play
@@ -12,9 +12,11 @@ namespace QuickSpace::Play
 		void Update() override;
 		float OrderPriority() override;
 	private:
-		TerritoryEdge m_edgeTarget{};
+		TerrEdgeRef m_edgeTarget{};
 		float m_edgeProceededRate{};
 
 		float m_animValue;
+
+		void moveOnEdge();
 	};
 }

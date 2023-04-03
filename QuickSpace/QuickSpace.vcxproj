@@ -207,8 +207,8 @@
     <ClCompile Include="QuickSpace\Play\PlayBg.cpp" />
     <ClCompile Include="QuickSpace\Play\Player.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayManager.cpp" />
-    <ClCompile Include="QuickSpace\Play\TerritoryEdge.cpp" />
-    <ClCompile Include="QuickSpace\Play\TerritoryManager.cpp" />
+    <ClCompile Include="QuickSpace\Play\TerrEdge.cpp" />
+    <ClCompile Include="QuickSpace\Play\TerrManager.cpp" />
     <ClCompile Include="QuickSpace\Test\Demos.cpp">
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -577,8 +577,8 @@
     <ClInclude Include="QuickSpace\Play\PlayBg.h" />
     <ClInclude Include="QuickSpace\Play\Player.h" />
     <ClInclude Include="QuickSpace\Play\PlayManager.h" />
-    <ClInclude Include="QuickSpace\Play\TerritoryEdge.h" />
-    <ClInclude Include="QuickSpace\Play\TerritoryManager.h" />
+    <ClInclude Include="QuickSpace\Play\TerrEdge.h" />
+    <ClInclude Include="QuickSpace\Play\TerrManager.h" />
     <ClInclude Include="QuickSpace\Test\Demos.h" />
     <ClInclude Include="QuickSpace\Util\Range.h" />
     <ClInclude Include="QuickSpace\Util\Utils.h" />
