@@ -58,6 +58,11 @@ namespace QuickSpace
 		return *m_playRoot;
 	}
 
+	GameInput& GameRoot::GetInput()
+	{
+		return m_input;
+	}
+
 	CoroTask GameRoot::performGame(CoroTaskYield& yield)
 	{
 		// Demos::InitDemos();

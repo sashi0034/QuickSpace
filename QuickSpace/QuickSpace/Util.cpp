@@ -9,4 +9,9 @@ namespace QuickSpace
 		const float scale = texture.size().x / tileSize;
 		(void)texture.mapped(size * scale).scaled(1 / scale).draw(pos);
 	}
+
+	int Util::AnimFrameIndex(float controller, const int frameNumber, const int frameDuration)
+	{
+		return static_cast<int>(controller * 1000) / frameDuration % frameNumber;
+	}
 }

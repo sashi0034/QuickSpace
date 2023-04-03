@@ -2,6 +2,7 @@
 #include "ActorManager.h"
 #include "CoroManager.h"
 #include "GameAsset.h"
+#include "GameInput.h"
 
 namespace QuickSpace
 {
@@ -27,10 +28,12 @@ namespace QuickSpace
 		CoroManager& GetCoroutineManager();
 		GameAsset& GetAsset();
 		PlayManager& GetPlayRoot();
+		GameInput& GetInput();
 	private:
 		ActorManager m_actorManager{};
 		CoroManager m_coroutineManager{};
 		GameAsset m_asset{};
+		GameInput m_input{};
 		std::shared_ptr<PlayManager> m_playRoot{};
 
 		CoroTask performGame(CoroTaskYield& yield);

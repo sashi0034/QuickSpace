@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "ActorManager.h"
 
 namespace QuickSpace
 {

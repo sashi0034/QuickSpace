@@ -3,6 +3,8 @@
 
 namespace QuickSpace
 {
+	class ActorBase;
+
 	class ActorManager
 	{
 	public:

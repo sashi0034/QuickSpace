@@ -120,6 +120,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="QuickSpace\ActorBase.cpp" />
     <ClCompile Include="QuickSpace\ActorManager.cpp" />
+    <ClCompile Include="QuickSpace\ConstParam.cpp" />
     <ClCompile Include="QuickSpace\GameAsset.cpp" />
     <ClCompile Include="QuickSpace\CoroUtil.cpp" />
     <ClCompile Include="QuickSpace\CoroManager.cpp">
@@ -200,9 +201,13 @@
       <AdditionalIncludeDirectories>C:\SDK\boost_1_79_0\include;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="QuickSpace\GameInput.cpp" />
     <ClCompile Include="QuickSpace\GameRoot.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayBg.cpp" />
+    <ClCompile Include="QuickSpace\Play\Player.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayManager.cpp" />
+    <ClCompile Include="QuickSpace\Play\TerritoryEdge.cpp" />
+    <ClCompile Include="QuickSpace\Play\TerritoryManager.cpp" />
     <ClCompile Include="QuickSpace\Test\Demos.cpp">
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -483,12 +488,17 @@
   <ItemGroup>
     <ClInclude Include="QuickSpace\ActorBase.h" />
     <ClInclude Include="QuickSpace\ActorManager.h" />
+    <ClInclude Include="QuickSpace\ConstParam.h" />
     <ClInclude Include="QuickSpace\GameAsset.h" />
     <ClInclude Include="QuickSpace\CoroUtil.h" />
     <ClInclude Include="QuickSpace\CoroManager.h" />
+    <ClInclude Include="QuickSpace\GameInput.h" />
     <ClInclude Include="QuickSpace\GameRoot.h" />
     <ClInclude Include="QuickSpace\Play\PlayBg.h" />
+    <ClInclude Include="QuickSpace\Play\Player.h" />
     <ClInclude Include="QuickSpace\Play\PlayManager.h" />
+    <ClInclude Include="QuickSpace\Play\TerritoryEdge.h" />
+    <ClInclude Include="QuickSpace\Play\TerritoryManager.h" />
     <ClInclude Include="QuickSpace\Test\Demos.h" />
     <ClInclude Include="QuickSpace\Util.h" />
     <ClInclude Include="stdafx.h" />
@@ -577,6 +587,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\asset\image\bg_savannah.png" />
+    <Content Include="App\asset\image\phine_32x32.png" />
     <Content Include="App\asset\image\tex_savannah.png" />
     <Content Include="App\asset\image\pondelion_32x32.png" />
   </ItemGroup>
