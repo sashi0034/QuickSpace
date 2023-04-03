@@ -9,14 +9,15 @@ namespace QuickSpace::Play
 
 		constexpr double lineHalf = 480;
 
-		m_edgeList.push_back(
-			TerritoryEdge(center + Vec2{-lineHalf, -lineHalf}, center + Vec2{-lineHalf, lineHalf}));
-		m_edgeList.push_back(
-			TerritoryEdge(center + Vec2{-lineHalf, lineHalf}, center + Vec2{lineHalf, lineHalf}));
-		m_edgeList.push_back(
-			TerritoryEdge(center + Vec2{lineHalf, lineHalf}, center + Vec2{lineHalf, -lineHalf}));
-		m_edgeList.push_back(
-			TerritoryEdge(center + Vec2{lineHalf, -lineHalf}, center + Vec2{-lineHalf, -lineHalf}));
+		const auto v00 = std::make_shared<Vec2>(center + Vec2{-lineHalf, -lineHalf});
+		const auto v01 = std::make_shared<Vec2>(center + Vec2{-lineHalf, lineHalf});;
+		const auto v10 = std::make_shared<Vec2>(center + Vec2{lineHalf, -lineHalf});;
+		const auto v11 = std::make_shared<Vec2>(center + Vec2{lineHalf, lineHalf});;
+
+		m_edgeList.push_back(TerritoryEdge(v00, v01));
+		m_edgeList.push_back(TerritoryEdge(v01, v11));
+		m_edgeList.push_back(TerritoryEdge(v11, v10));
+		m_edgeList.push_back(TerritoryEdge(v10, v00));
 	}
 
 	void TerritoryManager::Update()
@@ -24,12 +25,12 @@ namespace QuickSpace::Play
 		for (auto&& edge : m_edgeList)
 		{
 			constexpr int width = 10;
-			Line{edge.GetStart(), edge.GetEnd()}.draw(width + 2, Color{32, 32,48});
+			Line{*edge.GetStart(), *edge.GetEnd()}.draw(width + 2, Color{32, 32,48});
 		}
 		for (auto&& edge : m_edgeList)
 		{
 			constexpr int width = 10;
-			Line{edge.GetStart(), edge.GetEnd()}.draw(width, Color{160, 64, 196});
+			Line{*edge.GetStart(), *edge.GetEnd()}.draw(width, Color{160, 64, 196});
 		}
 
 		ActorBase::Update();

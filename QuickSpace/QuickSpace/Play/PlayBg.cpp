@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "PlayBg.h"
-#include "../Util.h"
 #include "QuickSpace/GameAsset.h"
 
 namespace QuickSpace::Play

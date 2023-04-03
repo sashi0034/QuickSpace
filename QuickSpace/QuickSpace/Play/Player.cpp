@@ -6,7 +6,7 @@
 #include "QuickSpace/ConstParam.h"
 #include "QuickSpace/GameAsset.h"
 #include "QuickSpace/GameInput.h"
-#include "QuickSpace/Util.h"
+#include "QuickSpace/Util/Utils.h"
 
 namespace QuickSpace::Play
 {
@@ -32,7 +32,16 @@ namespace QuickSpace::Play
 			.scaled(ConstParam::PixelartScale)
 			.drawAt(position - Vec2{0, ConstParam::PixelartScale * cellSize / 2});
 
-		if (GameInput::Instance().Left().pressed()) Print(U"Left");
+
+		const float speed = Scene::DeltaTime() * 0.3f;
+		if (GameInput::Instance().Up().pressed())
+			m_edgeTarget.MoveOnEdge(&m_edgeProceededRate, EAngle::Up, speed);
+		else if (GameInput::Instance().Down().pressed())
+			m_edgeTarget.MoveOnEdge(&m_edgeProceededRate, EAngle::Down, speed);
+		if (GameInput::Instance().Left().pressed())
+			m_edgeTarget.MoveOnEdge(&m_edgeProceededRate, EAngle::Left, speed);
+		else if (GameInput::Instance().Right().pressed())
+			m_edgeTarget.MoveOnEdge(&m_edgeProceededRate, EAngle::Right, speed);
 
 		ActorBase::Update();
 	}
@@ -41,4 +50,13 @@ namespace QuickSpace::Play
 	{
 		return 100;
 	}
+
+	// Optional<EAngle> Player::getInputAngle() const
+	// {
+	// 	if (GameInput::Instance().Up().pressed()) return EAngle::Up;
+	// 	if (GameInput::Instance().Down().pressed()) return EAngle::Down;
+	//
+	// 	if (GameInput::Instance().Left().pressed()) return EAngle::Left;
+	// 	if (GameInput::Instance().Right().pressed()) return EAngle::Right;
+	// }
 }

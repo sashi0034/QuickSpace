@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "Util.h"
+#include "Utils.h"
 
 namespace QuickSpace
 {
