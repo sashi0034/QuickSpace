@@ -28,16 +28,14 @@ namespace QuickSpace::Play
 		return m_endPos;
 	}
 
-	int TerrEdge::DirFixedVal() const
+	void TerrEdge::SetFixed(bool flag)
 	{
-		return IsHorizontal() ? m_startPos->y : m_startPos->x;
+		m_isFixed = flag;
 	}
 
-	Util::RangeInt TerrEdge::DirRangeVal() const
+	bool TerrEdge::IsFixed() const
 	{
-		return IsHorizontal()
-			? Util::RangeInt::FromSort(m_startPos->x, m_endPos->x)
-			: Util::RangeInt::FromSort(m_startPos->y, m_endPos->y);
+		return m_isFixed;
 	}
 
 	bool TerrEdge::HasVertex(const TerrVertexRef& vertex) const
@@ -45,7 +43,12 @@ namespace QuickSpace::Play
 		return m_startPos.get() == vertex.get() || m_endPos.get() == vertex.get();
 	}
 
-	Optional<EAngle> TerrEdge::GetDirectionOf(const TerrVertexRef& oneSideVertex) const
+	EAngle TerrEdge::Direction() const
+	{
+		return m_direction;
+	}
+
+	Optional<EAngle> TerrEdge::GetDirectionFrom(const TerrVertexRef& oneSideVertex) const
 	{
 		if (m_startPos.get() == oneSideVertex.get())
 		{
@@ -159,13 +162,17 @@ namespace QuickSpace::Play
 		TerrVertexRef overlappedVertex{};
 		if (IsHorizontal())
 		{
-			if (m_startPos->y == other->m_startPos->y) overlappedVertex =  other->m_startPos;
-			if (m_startPos->y == other->m_endPos->y) overlappedVertex =  other->m_endPos;
+			if (m_startPos->x == other->m_startPos->x) overlappedVertex = m_startPos;
+			else if (m_endPos->x == other->m_startPos->x) overlappedVertex = m_endPos;
+			else if (m_startPos->y == other->m_startPos->y) overlappedVertex =  other->m_startPos;
+			else if (m_startPos->y == other->m_endPos->y) overlappedVertex =  other->m_endPos;
 		}
 		else
 		{
-			if (m_startPos->x == other->m_startPos->x) overlappedVertex =  other->m_startPos;
-			if (m_startPos->x == other->m_endPos->x) overlappedVertex =  other->m_endPos;
+			if (m_startPos->y == other->m_startPos->y) overlappedVertex = m_startPos;
+			if (m_endPos->y == other->m_startPos->y) overlappedVertex = m_endPos;
+			else if (m_startPos->x == other->m_startPos->x) overlappedVertex =  other->m_startPos;
+			else if (m_startPos->x == other->m_endPos->x) overlappedVertex =  other->m_endPos;
 		}
 
 		if (overlappedVertex.get() == nullptr)

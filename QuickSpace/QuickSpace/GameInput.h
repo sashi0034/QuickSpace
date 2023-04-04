@@ -9,6 +9,7 @@ namespace QuickSpace
 		InputGroup& Right();
 		InputGroup& Up();
 		InputGroup& Down();
+		InputGroup& Ok();
 
 		static GameInput& Instance();
 	private:
@@ -16,5 +17,6 @@ namespace QuickSpace
 		InputGroup m_right = KeyRight | KeyD;
 		InputGroup m_up = KeyUp | KeyW;
 		InputGroup m_down = KeyDown | KeyS;
+		InputGroup m_ok = KeySpace;
 	};
 }

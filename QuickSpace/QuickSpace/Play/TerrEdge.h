@@ -23,12 +23,12 @@ namespace QuickSpace::Play
 		[[nodiscard]] Vec2 Midpoint(float rate) const;
 		[[nodiscard]] TerrVertexRef GetStart() const;
 		[[nodiscard]] TerrVertexRef GetEnd() const;
-
-		int DirFixedVal() const;
-		Util::RangeInt DirRangeVal() const;
+		void SetFixed(bool flag);
+		bool IsFixed() const;
 
 		bool HasVertex(const TerrVertexRef& vertex) const;
-		Optional<EAngle> GetDirectionOf(const TerrVertexRef& oneSideVertex) const;
+		EAngle Direction() const;
+		Optional<EAngle> GetDirectionFrom(const TerrVertexRef& oneSideVertex) const;
 		void MoveOnEdge(Float2* cursor, EAngle direction, float speed) const;
 		void MoveOnEdgeByRate(float* movingRate, EAngle direction, float speed);
 		bool IsHorizontal() const;
@@ -41,6 +41,8 @@ namespace QuickSpace::Play
 		TerrVertexRef m_endPos{};
 		EAngle m_direction{};
 		Array<TerrEdgeNeighbor> m_neighbors{};
+		// プレイヤーが引っ張っているときオフ
+		bool m_isFixed = true;
 
 		void addNeighbor(const TerrEdgeRef& other);
 		EAngle directionReversed() const;

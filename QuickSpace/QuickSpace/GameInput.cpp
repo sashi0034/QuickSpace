@@ -25,6 +25,11 @@ namespace QuickSpace
 		return m_down;
 	}
 
+	InputGroup& GameInput::Ok()
+	{
+		return m_ok;
+	}
+
 	GameInput& GameInput::Instance()
 	{
 		return GameRoot::Global().GetInput();
