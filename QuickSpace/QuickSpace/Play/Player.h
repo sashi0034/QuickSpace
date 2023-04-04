@@ -13,10 +13,11 @@ namespace QuickSpace::Play
 		float OrderPriority() override;
 	private:
 		TerrEdgeRef m_edgeTarget{};
-		float m_edgeProceededRate{};
+		Float2 m_edgeCursor{};
 
-		float m_animValue;
+		float m_animValue{};
 
 		void moveOnEdge();
+		void checkMoveToNeighbor(EAngle angle, float speed, bool isHorizontal);
 	};
 }

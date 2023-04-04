@@ -28,6 +28,24 @@ namespace QuickSpace::Play
 		return {};
 	}
 
+	Float2 Angle::ToFloat2() const
+	{
+		switch (m_value)
+		{
+		case EAngle::Up:
+			return Float2::Up();
+		case EAngle::Right:
+			return Float2::Right();
+		case EAngle::Down:
+			return Float2::Down();
+		case EAngle::Left:
+			return Float2::Left();
+		default:
+			assert(false);
+		}
+		return Float2::Zero();
+	}
+
 	Angle Angle::ConvertFrom(const Vec2& pos)
 	{
 		// atan2の定義域は -pi ~ pi

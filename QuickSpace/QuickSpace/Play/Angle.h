@@ -16,6 +16,7 @@ namespace QuickSpace::Play
 		explicit Angle(EAngle value) : m_value(value){}
 		[[nodiscard]] EAngle Value() const;
 		EAngle Reverse() const;
+		Float2 ToFloat2() const;
 
 		static Angle ConvertFrom(const Vec2& vec);
 	private:

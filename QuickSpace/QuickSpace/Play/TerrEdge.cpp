@@ -28,6 +28,18 @@ namespace QuickSpace::Play
 		return m_endPos;
 	}
 
+	int TerrEdge::DirFixedVal() const
+	{
+		return IsHorizontal() ? m_startPos->y : m_startPos->x;
+	}
+
+	Util::RangeInt TerrEdge::DirRangeVal() const
+	{
+		return IsHorizontal()
+			? Util::RangeInt::FromSort(m_startPos->x, m_endPos->x)
+			: Util::RangeInt::FromSort(m_startPos->y, m_endPos->y);
+	}
+
 	bool TerrEdge::HasVertex(const TerrVertexRef& vertex) const
 	{
 		return m_startPos.get() == vertex.get() || m_endPos.get() == vertex.get();
@@ -41,12 +53,29 @@ namespace QuickSpace::Play
 		}
 		if (m_endPos.get() == oneSideVertex.get())
 		{
-			return Angle(m_direction).Reverse();
+			return directionReversed();
 		}
 		return none;
 	}
 
-	void TerrEdge::MoveOnEdge(float* movingRate, EAngle direction, float speed)
+	void TerrEdge::MoveOnEdge(Float2* cursor, EAngle direction, float speed) const
+	{
+		if (direction == m_direction || direction == directionReversed())
+			*cursor += Angle(direction).ToFloat2() * speed;
+
+		if (IsHorizontal())
+		{
+			cursor->y = m_startPos->y;
+			cursor->x = Util::RangeInt::FromSort(m_startPos->x, m_endPos->x).Clamp(cursor->x);
+		}
+		else
+		{
+			cursor->x = m_startPos->x;
+			cursor->y = Util::RangeInt::FromSort(m_startPos->y, m_endPos->y).Clamp(cursor->y);
+		}
+	}
+
+	void TerrEdge::MoveOnEdgeByRate(float* movingRate, EAngle direction, float speed)
 	{
 		if (direction == m_direction)
 			*movingRate -= speed;
@@ -90,6 +119,33 @@ namespace QuickSpace::Play
 		return m_neighbors;
 	}
 
+	const Optional<TerrEdgeNeighbor> TerrEdge::GetNearestNeighbor(const Float2& point, EAngle targetDirection) const
+	{
+		int resultIndex = -1;
+		float resultDelta{};
+		for (int i=0; i<m_neighbors.size(); ++i)
+		{
+			auto&& neighbor = m_neighbors[i];
+			auto&& neighborRef = neighbor.NeighborRef.lock();
+			if (neighborRef == nullptr) continue;
+			auto neighborDirection = neighborRef->m_startPos == neighbor.OverlappedVertex
+				? neighborRef->m_direction
+				: neighborRef->directionReversed();
+			if (neighborDirection != targetDirection) continue;
+
+			float checkingDelta = checkingDelta = Math::Abs(IsHorizontal()
+					? neighbor.OverlappedVertex->x - point.x
+					: neighbor.OverlappedVertex->y - point.y);
+			bool isUpdate = resultIndex == -1 || checkingDelta < resultDelta;
+			if (isUpdate == false) continue;
+
+			// 結果更新
+			resultIndex = i;
+			resultDelta = checkingDelta;
+		}
+		return resultIndex == -1 ? none : Optional(m_neighbors[resultIndex]);
+	}
+
 	void TerrEdge::ConnectEdges(const TerrEdgeRef& neighbor1, const TerrEdgeRef& neighbor2)
 	{
 		assert(neighbor1->IsHorizontal() != neighbor2->IsHorizontal());
@@ -119,5 +175,10 @@ namespace QuickSpace::Play
 		}
 
 		m_neighbors.push_back(TerrEdgeNeighbor{other, overlappedVertex });
+	}
+
+	EAngle TerrEdge::directionReversed() const
+	{
+		return Angle(m_direction).Reverse();
 	}
 }
