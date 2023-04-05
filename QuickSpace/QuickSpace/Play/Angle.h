@@ -20,6 +20,7 @@ namespace QuickSpace::Play
 		EAngle Counterclockwise() const;
 		Point ToPoint() const;
 		Float2 ToFloat2() const;
+		bool IsHorizontal() const;
 
 		static Angle ConvertFrom(const Vec2& vec);
 	private:

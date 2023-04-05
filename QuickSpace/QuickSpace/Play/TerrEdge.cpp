@@ -61,6 +61,13 @@ namespace QuickSpace::Play
 		return none;
 	}
 
+	bool TerrEdge::IsOverlappedVertex(const TerrVertexRef& vertex) const
+	{
+		return IsHorizontal()
+			? m_startPos->y == vertex->y && Util::RangeInt::FromSort(m_startPos->x, m_endPos->x).IsBetween(vertex->x)
+			: m_startPos->x == vertex->x && Util::RangeInt::FromSort(m_startPos->y, m_endPos->y).IsBetween(vertex->y);
+	}
+
 	void TerrEdge::MoveOnEdge(Float2* cursor, EAngle direction, float speed) const
 	{
 		if (direction == m_direction || direction == directionReversed())
@@ -131,10 +138,12 @@ namespace QuickSpace::Play
 			auto&& neighbor = m_neighbors[i];
 			auto&& neighborRef = neighbor.NeighborRef.lock();
 			if (neighborRef == nullptr) continue;
-			auto neighborDirection = neighborRef->m_startPos == neighbor.OverlappedVertex
-				? neighborRef->m_direction
-				: neighborRef->directionReversed();
-			if (neighborDirection != targetDirection) continue;
+
+			// 隣接辺が始点または終点に重なっているときは特殊分岐
+			if (neighborRef->m_startPos == neighbor.OverlappedVertex && neighborRef->m_direction != targetDirection) continue;
+			if (neighborRef->m_endPos == neighbor.OverlappedVertex && neighborRef->directionReversed() != targetDirection) continue;
+			// 隣接辺がその方向に伸びてるか水平か垂直かどうかで確認
+			if (Angle(targetDirection).IsHorizontal() != neighborRef->IsHorizontal()) continue;
 
 			float checkingDelta = checkingDelta = Math::Abs(IsHorizontal()
 					? neighbor.OverlappedVertex->x - point.x
@@ -155,6 +164,15 @@ namespace QuickSpace::Play
 
 		neighbor1->addNeighbor(neighbor2);
 		neighbor2->addNeighbor(neighbor1);
+	}
+
+	EAngle TerrEdge::CalcDirection(const TerrVertexRef& startPos, const TerrVertexRef& endPos)
+	{
+		bool isHorizontal = startPos->y == endPos->y;
+		if (isHorizontal)
+			return startPos->x < endPos->x ? EAngle::Right : EAngle::Left;
+		else
+			return startPos->y < endPos->y ? EAngle::Up : EAngle::Down;
 	}
 
 	void TerrEdge::addNeighbor(const TerrEdgeRef& other)

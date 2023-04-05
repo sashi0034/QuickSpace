@@ -1,6 +1,9 @@
 ﻿#include "stdafx.h"
 #include "TerrManager.h"
 
+#include "Player.h"
+#include "PlayManager.h"
+
 namespace QuickSpace::Play
 {
 	void TerrManager::Init()
@@ -28,6 +31,8 @@ namespace QuickSpace::Play
 		m_edgeList.push_back(e2);
 		m_edgeList.push_back(e3);
 		m_edgeList.push_back(e4);
+
+		m_frontierFace = SepFace({SepEdge(e1), SepEdge(e2), SepEdge(e3), SepEdge(e4)});
 	}
 
 	void TerrManager::Update()
@@ -39,14 +44,21 @@ namespace QuickSpace::Play
 		}
 		for (auto&& edge : m_edgeList)
 		{
-			Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth, Color{160, 64, 196});
+			auto color = Color{160, 64, 196};
+			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge) color.b = 0;
+			(void)Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth, color);
 		}
 
 		ActorBase::Update();
 	}
 
-	Array<TerrEdgeRef>& TerrManager::List()
+	Array<TerrEdgeRef>& TerrManager::Edges()
 	{
 		return m_edgeList;
+	}
+
+	SepFace& TerrManager::Frontier()
+	{
+		return m_frontierFace;
 	}
 }

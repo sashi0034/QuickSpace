@@ -92,6 +92,11 @@ namespace QuickSpace::Play
 		return convertToVector<Float2>(m_value);
 	}
 
+	bool Angle::IsHorizontal() const
+	{
+		return m_value == EAngle::Left || m_value == EAngle::Right;
+	}
+
 	Angle Angle::ConvertFrom(const Vec2& pos)
 	{
 		// atan2の定義域は -pi ~ pi

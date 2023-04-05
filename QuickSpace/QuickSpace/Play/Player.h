@@ -17,6 +17,7 @@ namespace QuickSpace::Play
 		void Init();
 		void Update() override;
 		float OrderPriority() override;
+		TerrEdgeRef& GetEdgeTarget();
 	private:
 		EPlayerState m_state = EPlayerState::Moving;
 		TerrEdgeRef m_edgeTarget{};
@@ -27,6 +28,7 @@ namespace QuickSpace::Play
 		float m_animValue{};
 
 		void moveOnEdge();
+		void checkFinishDrawing();
 		void moveWithDraw();
 		void startDrawing(EAngle angle);
 		void checkMoveIntersect(EAngle angle, float speed, bool isHorizontal);

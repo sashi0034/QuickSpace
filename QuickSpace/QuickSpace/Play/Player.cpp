@@ -17,7 +17,7 @@ namespace QuickSpace::Play
 	void Player::Init()
 	{
 		auto&& territory = PlayManager::Instance().Territory();
-		m_edgeTarget = territory.List()[0];
+		m_edgeTarget = territory.Edges()[0];
 		m_edgeCursor = m_edgeTarget->GetStart()->xy();
 	}
 
@@ -78,6 +78,28 @@ namespace QuickSpace::Play
 			checkMoveIntersect(Angle(edgeDirection).Counterclockwise(), speed, m_edgeTarget->IsHorizontal());
 	}
 
+	void Player::checkFinishDrawing()
+	{
+		const auto intersected = PlayManager::Instance().Territory().Frontier().IntersectWith(SepEdge(m_edgeTarget));
+		if (intersected.has_value() == false) return;
+		auto intersectedPoint = intersected.value().CalcIntersected(SepEdge(m_edgeTarget));
+		if (intersectedPoint == *m_edgeTarget->GetStart()) return;
+
+		m_edgeCursor = intersectedPoint;
+		*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+
+		for (auto&& edge : PlayManager::Instance().Territory().Edges())
+		{
+			if (m_edgeTarget->IsHorizontal() == edge->IsHorizontal()) continue;
+			if (edge->IsOverlappedVertex(m_edgeTarget->GetEnd()) == false) continue;
+
+			// 頂点が重なっている辺を接続
+			TerrEdge::ConnectEdges(edge, m_edgeTarget);
+		}
+
+		m_state = EPlayerState::Moving;
+	}
+
 	void Player::moveWithDraw()
 	{
 		const auto direction = m_edgeTarget->Direction();
@@ -85,9 +107,14 @@ namespace QuickSpace::Play
 
 		if (inputAngle(direction).pressed())
 		{
+			// 描画中に線を引き伸ばす
 			m_edgeCursor += Angle(direction).ToFloat2() * speed;
 			*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+
+			// 描画終了かチェック
+			checkFinishDrawing();
 		}
+		// 線の方向切り替え
 		else if (inputAngle(Angle(direction).Clockwise()).pressed())
 		{
 			startDrawing(Angle(direction).Clockwise());
@@ -99,16 +126,22 @@ namespace QuickSpace::Play
 
 	}
 
+	float getNeighborDelta(const TerrEdgeNeighbor neighbor, Point cursor, bool isHorizontal)
+	{
+		return isHorizontal
+			? neighbor.OverlappedVertex->x - cursor.x
+			: neighbor.OverlappedVertex->y - cursor.y;
+	}
+
 	// 移動
 	void Player::checkMoveIntersect(EAngle angle, float speed, bool isHorizontal)
 	{
+		// 最も近い隣接辺を対象にする
 		const auto neighbor0 = m_edgeTarget->GetNearestNeighbor(m_edgeCursor, angle);
 		if (neighbor0.has_value() == false) return;
 
 		const auto neighbor = neighbor0.value();
-		const float neighborDelta = isHorizontal
-			? neighbor.OverlappedVertex->x - roundEdgeCursor().x
-			: neighbor.OverlappedVertex->y - roundEdgeCursor().y;
+		const float neighborDelta = getNeighborDelta(neighbor, roundEdgeCursor(), isHorizontal);
 		if (Math::Abs(neighborDelta) > 1)
 		{
 			if (GameInput::Instance().Ok().pressed())
@@ -122,6 +155,11 @@ namespace QuickSpace::Play
 			// 方向が違う隣接辺に遠いので近づく
 			if (neighborDelta < 0) m_edgeTarget->MoveOnEdge(&m_edgeCursor, isHorizontal ? EAngle::Left : EAngle::Up, speed);
 			else m_edgeTarget->MoveOnEdge(&m_edgeCursor, isHorizontal ? EAngle::Right : EAngle::Down, speed);
+
+			// 点を通過してしまったときはその点に強制的に戻す
+			const float newNeighborDelta = getNeighborDelta(neighbor, roundEdgeCursor(), isHorizontal);
+			if (Math::Sign(newNeighborDelta) != Math::Sign(neighborDelta))
+				m_edgeCursor = neighbor.OverlappedVertex->xy();
 		}
 		else if (auto&& neighborRef = neighbor.NeighborRef.lock())
 		{
@@ -154,7 +192,7 @@ namespace QuickSpace::Play
 			std::make_shared<Point>(nearPoint.x, nearPoint.y));
 		TerrEdge::ConnectEdges(newEdge, m_edgeTarget);
 		newEdge->SetFixed(false);
-		PlayManager::Instance().Territory().List().push_back(newEdge);
+		PlayManager::Instance().Territory().Edges().push_back(newEdge);
 		m_edgeTarget = newEdge;
 	}
 
@@ -162,6 +200,11 @@ namespace QuickSpace::Play
 	float Player::OrderPriority()
 	{
 		return 100;
+	}
+
+	TerrEdgeRef& Player::GetEdgeTarget()
+	{
+		return m_edgeTarget;
 	}
 
 	// Optional<EAngle> Player::getInputAngle() const

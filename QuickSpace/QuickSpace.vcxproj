@@ -207,6 +207,8 @@
     <ClCompile Include="QuickSpace\Play\PlayBg.cpp" />
     <ClCompile Include="QuickSpace\Play\Player.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayManager.cpp" />
+    <ClCompile Include="QuickSpace\Play\SepEdge.cpp" />
+    <ClCompile Include="QuickSpace\Play\SepFace.cpp" />
     <ClCompile Include="QuickSpace\Play\TerrEdge.cpp" />
     <ClCompile Include="QuickSpace\Play\TerrManager.cpp" />
     <ClCompile Include="QuickSpace\Test\Demos.cpp">
@@ -577,6 +579,8 @@
     <ClInclude Include="QuickSpace\Play\PlayBg.h" />
     <ClInclude Include="QuickSpace\Play\Player.h" />
     <ClInclude Include="QuickSpace\Play\PlayManager.h" />
+    <ClInclude Include="QuickSpace\Play\SepEdge.h" />
+    <ClInclude Include="QuickSpace\Play\SepFace.h" />
     <ClInclude Include="QuickSpace\Play\TerrEdge.h" />
     <ClInclude Include="QuickSpace\Play\TerrManager.h" />
     <ClInclude Include="QuickSpace\Test\Demos.h" />

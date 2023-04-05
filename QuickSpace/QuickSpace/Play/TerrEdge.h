@@ -29,6 +29,7 @@ namespace QuickSpace::Play
 		bool HasVertex(const TerrVertexRef& vertex) const;
 		EAngle Direction() const;
 		Optional<EAngle> GetDirectionFrom(const TerrVertexRef& oneSideVertex) const;
+		bool IsOverlappedVertex(const TerrVertexRef& vertex) const;
 		void MoveOnEdge(Float2* cursor, EAngle direction, float speed) const;
 		void MoveOnEdgeByRate(float* movingRate, EAngle direction, float speed);
 		bool IsHorizontal() const;
@@ -36,6 +37,8 @@ namespace QuickSpace::Play
 		const Array<TerrEdgeNeighbor>& Neighbors() const;
 		const Optional<TerrEdgeNeighbor> GetNearestNeighbor(const Float2& point, EAngle targetDirection) const;
 		static void ConnectEdges(const TerrEdgeRef& neighbor1, const TerrEdgeRef& neighbor2);
+
+		static EAngle CalcDirection(const TerrVertexRef& startPos, const TerrVertexRef& endPos);
 	private:
 		TerrVertexRef m_startPos{};
 		TerrVertexRef m_endPos{};
