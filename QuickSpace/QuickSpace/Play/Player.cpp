@@ -85,6 +85,9 @@ namespace QuickSpace::Play
 		auto intersectedPoint = intersected.value().CalcIntersected(SepEdge(m_edgeTarget));
 		if (intersectedPoint == *m_edgeTarget->GetStart()) return;
 
+		// 線を引く処理終了
+
+		confirmDrawingEdge();
 		m_edgeCursor = intersectedPoint;
 		*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
 
@@ -98,18 +101,50 @@ namespace QuickSpace::Play
 		}
 
 		m_state = EPlayerState::Moving;
+		// TODO: Frontierにm_drawingEdgesを反映
+		m_drawnEdges.clear();
+	}
+
+	void Player::confirmDrawingEdge()
+	{
+		m_drawnEdges.push_back(SepEdge(m_edgeTarget));
+	}
+
+	void Player::extendDrawingEdge(const EAngle direction)
+	{
+		// 描画中に線を引き伸ばす
+		m_edgeCursor += Angle(direction).ToFloat2() * getSpeed();
+		*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+
+		const auto cursorExtended =
+			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(direction).ToPoint() * ConstParam::LineMargin);
+		auto cursorExtendedEdge = SepEdge(m_edgeTarget->GetStart(), cursorExtended);
+		// 他の描画中の辺と交わらないようにする
+		for (auto&& drawnEdge : m_drawnEdges)
+		{
+			if (drawnEdge.GetEnd() == m_edgeTarget->GetStart()) continue;
+			// 同じ向きのやつとも重ならないようにするためちょっとだけ間隔を開けておく
+			// share_ptrここで使うの重いから別の方法がいいかも...
+			auto drawnEdgeExtended = SepEdge(
+				std::make_shared<Point>(*drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
+				std::make_shared<Point>(*drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
+			if (drawnEdgeExtended.IsIntersectWith(SepEdge(cursorExtendedEdge)) == false) continue;
+
+			auto intersectedPoint = drawnEdgeExtended.CalcIntersected(SepEdge(m_edgeTarget));
+			// 交わったので修正
+			*cursorExtended = intersectedPoint;
+			m_edgeCursor = intersectedPoint - Angle(direction).ToPoint() * ConstParam::LineMargin;
+			*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+		}
 	}
 
 	void Player::moveWithDraw()
 	{
 		const auto direction = m_edgeTarget->Direction();
-		const float speed = getSpeed();
 
 		if (inputAngle(direction).pressed())
 		{
-			// 描画中に線を引き伸ばす
-			m_edgeCursor += Angle(direction).ToFloat2() * speed;
-			*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+			extendDrawingEdge(direction);
 
 			// 描画終了かチェック
 			checkFinishDrawing();
@@ -117,11 +152,13 @@ namespace QuickSpace::Play
 		// 線の方向切り替え
 		else if (inputAngle(Angle(direction).Clockwise()).pressed())
 		{
-			startDrawing(Angle(direction).Clockwise());
+			confirmDrawingEdge();
+			continueDrawing(Angle(direction).Clockwise(), m_edgeTarget->GetEnd());
 		}
 		else if (inputAngle(Angle(direction).Counterclockwise()).pressed())
 		{
-			startDrawing(Angle(direction).Counterclockwise());
+			confirmDrawingEdge();
+			continueDrawing(Angle(direction).Counterclockwise(), m_edgeTarget->GetEnd());
 		}
 
 	}
@@ -133,24 +170,32 @@ namespace QuickSpace::Play
 			: neighbor.OverlappedVertex->y - cursor.y;
 	}
 
+	bool Player::checkStartDrawing(EAngle angle)
+	{
+		if (GameInput::Instance().Ok().pressed() == false) return false;
+
+		// TODO: 線を引いてもいい場所かチェックする処理
+		// 線を引けるので開始
+		startDrawing(angle);
+		return true;
+	}
+
 	// 移動
 	void Player::checkMoveIntersect(EAngle angle, float speed, bool isHorizontal)
 	{
 		// 最も近い隣接辺を対象にする
 		const auto neighbor0 = m_edgeTarget->GetNearestNeighbor(m_edgeCursor, angle);
-		if (neighbor0.has_value() == false) return;
+		if (neighbor0.has_value() == false)
+		{
+			checkStartDrawing(angle);
+			return;
+		}
 
 		const auto neighbor = neighbor0.value();
 		const float neighborDelta = getNeighborDelta(neighbor, roundEdgeCursor(), isHorizontal);
 		if (Math::Abs(neighborDelta) > 1)
 		{
-			if (GameInput::Instance().Ok().pressed())
-			{
-				// TODO: 線を引いてもいい場所かチェックする処理
-				// 線を引けるので開始
-				startDrawing(angle);
-				return;
-			}
+			if (checkStartDrawing(angle)) return;
 
 			// 方向が違う隣接辺に遠いので近づく
 			if (neighborDelta < 0) m_edgeTarget->MoveOnEdge(&m_edgeCursor, isHorizontal ? EAngle::Left : EAngle::Up, speed);
@@ -182,18 +227,23 @@ namespace QuickSpace::Play
 		}
 	}
 
-	void Player::startDrawing(EAngle angle)
+	void Player::continueDrawing(EAngle angle, const TerrVertexRef& oldEnd)
 	{
-		m_state = EPlayerState::Drawing;
-		auto cursorPoint = roundEdgeCursor();
 		auto nearPoint = roundEdgeCursor() + Angle(angle).ToPoint();
 		const auto newEdge = std::make_shared<TerrEdge>(
-			std::make_shared<Point>(cursorPoint.x, cursorPoint.y),
+			oldEnd,
 			std::make_shared<Point>(nearPoint.x, nearPoint.y));
 		TerrEdge::ConnectEdges(newEdge, m_edgeTarget);
 		newEdge->SetFixed(false);
 		PlayManager::Instance().Territory().Edges().push_back(newEdge);
 		m_edgeTarget = newEdge;
+	}
+
+	void Player::startDrawing(EAngle angle)
+	{
+		m_state = EPlayerState::Drawing;
+		m_drawnEdges.clear();
+		continueDrawing(angle, std::make_shared<Point>(roundEdgeCursor()));
 	}
 
 

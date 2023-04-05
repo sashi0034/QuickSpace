@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "PlayManager.h"
+#include "QuickSpace/ConstParam.h"
 
 namespace QuickSpace::Play
 {
@@ -37,7 +38,7 @@ namespace QuickSpace::Play
 
 	void TerrManager::Update()
 	{
-		constexpr int lineWidth = 8;
+		constexpr int lineWidth = ConstParam::LineWidth;
 		for (auto&& edge : m_edgeList)
 		{
 			Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth + 2, Color{32, 32,48});

@@ -38,6 +38,21 @@ namespace QuickSpace:: Play
 			: Point(m_start->x, other.m_start->y);
 	}
 
+	TerrVertexRef& SepEdge::GetStart()
+	{
+		return m_start;
+	}
+
+	TerrVertexRef& SepEdge::GetEnd()
+	{
+		return m_end;
+	}
+
+	Angle SepEdge::GetDirection() const
+	{
+		return Angle(TerrEdge::CalcDirection(m_start, m_end));
+	}
+
 	bool SepEdge::isHorizontal() const
 	{
 		return m_start->y == m_end->y;

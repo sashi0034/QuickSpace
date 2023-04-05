@@ -10,7 +10,7 @@ namespace QuickSpace::Play
 	TerrEdge::TerrEdge(const TerrVertexRef& startPos, const TerrVertexRef& endPos) :
 		m_startPos(startPos),
 		m_endPos(endPos),
-		m_direction(Angle::ConvertFrom(endPos->xy() - startPos->xy()).Value())
+		m_direction(CalcDirection(startPos, endPos))
 	{}
 
 	Vec2 TerrEdge::Midpoint(float rate) const
@@ -168,11 +168,11 @@ namespace QuickSpace::Play
 
 	EAngle TerrEdge::CalcDirection(const TerrVertexRef& startPos, const TerrVertexRef& endPos)
 	{
-		bool isHorizontal = startPos->y == endPos->y;
+		const bool isHorizontal = startPos->y == endPos->y;
 		if (isHorizontal)
 			return startPos->x < endPos->x ? EAngle::Right : EAngle::Left;
 		else
-			return startPos->y < endPos->y ? EAngle::Up : EAngle::Down;
+			return startPos->y < endPos->y ? EAngle::Down : EAngle::Up;
 	}
 
 	void TerrEdge::addNeighbor(const TerrEdgeRef& other)
