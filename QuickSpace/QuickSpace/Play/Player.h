@@ -39,6 +39,7 @@ namespace QuickSpace::Play
 		void continueDrawing(EAngle angle, const TerrVertexRef& oldEnd);
 		void rotateDrawingDirection(EAngle angle);
 		void checkFinishDrawing();
+		void finishDrawing(Point intersectedPoint);
 		void confirmDrawingEdge();
 		void extendDrawingEdge(EAngle direction);
 		void checkMoveIntersect(EAngle angle, float speed, bool isHorizontal);

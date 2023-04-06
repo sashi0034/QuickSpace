@@ -39,7 +39,8 @@ namespace QuickSpace::Play
 		const Optional<TerrEdgeNeighbor> GetNearestNeighbor(const Float2& point, EAngle targetDirection) const;
 		static void ConnectEdges(const TerrEdgeRef& neighbor1, const TerrEdgeRef& neighbor2);
 
-		static EAngle CalcDirection(const TerrVertexRef& startPos, const TerrVertexRef& endPos);
+		static EAngle CalcDirectionBetween(const TerrVertexRef& startPos, const TerrVertexRef& endPos);
+		static bool IsOverlappedVertexBetween(const TerrVertexRef& startPos, const TerrVertexRef& endPos, const Point& checking);
 	private:
 		TerrVertexRef m_startPos{};
 		TerrVertexRef m_endPos{};

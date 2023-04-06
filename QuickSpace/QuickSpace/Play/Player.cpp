@@ -2,6 +2,7 @@
 #include "Player.h"
 
 #include "PlayManager.h"
+#include "SepEdgeSet.h"
 #include "TerrManager.h"
 #include "QuickSpace/ConstParam.h"
 #include "QuickSpace/GameAsset.h"
@@ -113,6 +114,11 @@ namespace QuickSpace::Play
 
 		// 線を引く処理終了
 
+		finishDrawing(intersectedPoint);
+	}
+
+	void Player::finishDrawing(Point intersectedPoint)
+	{
 		confirmDrawingEdge();
 		m_edgeCursor = intersectedPoint;
 		*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
@@ -127,7 +133,15 @@ namespace QuickSpace::Play
 		}
 
 		m_state = EPlayerState::Moving;
-		// TODO: Frontierにm_drawingEdgesを反映
+
+		// グラフを分割
+		auto tempFrontier = SepEdgeSet(PlayManager::Instance().Territory().Frontier().Edges());
+		tempFrontier.TryDivideEdge(m_drawnEdges.front().GetStart());
+		tempFrontier.TryDivideEdge(m_drawnEdges.back().GetEnd());
+		auto dividedFrontier = tempFrontier.CalcRootAsPureCircuit(*m_drawnEdges.front().GetStart(), *m_drawnEdges.back().GetEnd());
+
+		PlayManager::Instance().Territory().ResetFrontier(SepFace(dividedFrontier.LongRoot.Edges().append(m_drawnEdges)));
+
 		m_drawnEdges.clear();
 	}
 

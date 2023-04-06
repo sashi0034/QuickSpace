@@ -9,6 +9,7 @@ namespace QuickSpace::Play
 		SepFace() = default;
 		explicit SepFace(const Array<SepEdge>& edges);
 		Optional<SepEdge> IntersectWith(const SepEdge& targetEdge);
+		Array<SepEdge>& Edges();
 	private:
 		Array<SepEdge> m_edges{};
 	};

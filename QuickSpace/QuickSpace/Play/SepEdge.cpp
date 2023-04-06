@@ -30,6 +30,21 @@ namespace QuickSpace:: Play
 				Util::RangeInt::FromSort(other.m_start->x, other.m_end->x).IsBetween(m_start->x);
 	}
 
+	bool SepEdge::IsOverlappedVertex(const TerrVertexRef& vertex) const
+	{
+		return TerrEdge::IsOverlappedVertexBetween(m_start, m_end, *vertex);
+	}
+
+	bool SepEdge::IsOverlappedVertex(const Point& vertex) const
+	{
+		return TerrEdge::IsOverlappedVertexBetween(m_start, m_end, vertex);
+	}
+
+	int SepEdge::GetLength() const
+	{
+		return (*m_start - *m_end).manhattanLength();
+	}
+
 	Point SepEdge::CalcIntersected(const SepEdge& other) const
 	{
 		// assert(IsIntersectWith(other));
@@ -50,7 +65,7 @@ namespace QuickSpace:: Play
 
 	Angle SepEdge::GetDirection() const
 	{
-		return Angle(TerrEdge::CalcDirection(m_start, m_end));
+		return Angle(TerrEdge::CalcDirectionBetween(m_start, m_end));
 	}
 
 	bool SepEdge::isHorizontal() const

@@ -12,6 +12,7 @@ namespace QuickSpace::Play
 		void Update() override;
 		Array<TerrEdgeRef>& Edges();
 		SepFace& Frontier();
+		void ResetFrontier(const SepFace& frontier);
 	private:
 		SepFace m_frontierFace{};
 		Array<TerrEdgeRef> m_edgeList{};

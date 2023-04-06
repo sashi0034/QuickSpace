@@ -10,7 +10,7 @@ namespace QuickSpace::Play
 	TerrEdge::TerrEdge(const TerrVertexRef& startPos, const TerrVertexRef& endPos) :
 		m_startPos(startPos),
 		m_endPos(endPos),
-		m_direction(CalcDirection(startPos, endPos))
+		m_direction(CalcDirectionBetween(startPos, endPos))
 	{}
 
 	Vec2 TerrEdge::Midpoint(float rate) const
@@ -68,9 +68,7 @@ namespace QuickSpace::Play
 
 	bool TerrEdge::IsOverlappedVertex(const TerrVertexRef& vertex) const
 	{
-		return IsHorizontal()
-			? m_startPos->y == vertex->y && Util::RangeInt::FromSort(m_startPos->x, m_endPos->x).IsBetween(vertex->x)
-			: m_startPos->x == vertex->x && Util::RangeInt::FromSort(m_startPos->y, m_endPos->y).IsBetween(vertex->y);
+		return IsOverlappedVertexBetween(m_startPos, m_endPos, *vertex);
 	}
 
 	void TerrEdge::MoveOnEdge(Float2* cursor, EAngle direction, float speed) const
@@ -171,13 +169,22 @@ namespace QuickSpace::Play
 		neighbor2->addNeighbor(neighbor1);
 	}
 
-	EAngle TerrEdge::CalcDirection(const TerrVertexRef& startPos, const TerrVertexRef& endPos)
+	EAngle TerrEdge::CalcDirectionBetween(const TerrVertexRef& startPos, const TerrVertexRef& endPos)
 	{
 		const bool isHorizontal = startPos->y == endPos->y;
 		if (isHorizontal)
 			return startPos->x < endPos->x ? EAngle::Right : EAngle::Left;
 		else
 			return startPos->y < endPos->y ? EAngle::Down : EAngle::Up;
+	}
+
+	bool TerrEdge::IsOverlappedVertexBetween(
+		const TerrVertexRef& startPos, const TerrVertexRef& endPos, const Point& checking)
+	{
+		const bool isHorizontal = startPos->y == endPos->y;
+		return isHorizontal
+			? startPos->y == checking.y && Util::RangeInt::FromSort(startPos->x, endPos->x).IsBetween(checking.x)
+			: startPos->x == checking.x && Util::RangeInt::FromSort(startPos->y, endPos->y).IsBetween(checking.y);
 	}
 
 	void TerrEdge::addNeighbor(const TerrEdgeRef& other)

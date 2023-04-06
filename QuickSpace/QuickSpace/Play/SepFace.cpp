@@ -16,4 +16,9 @@ namespace QuickSpace::Play
 		}
 		return none;
 	}
+
+	Array<SepEdge>& SepFace::Edges()
+	{
+		return m_edges;
+	}
 }

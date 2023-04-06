@@ -62,4 +62,9 @@ namespace QuickSpace::Play
 	{
 		return m_frontierFace;
 	}
+
+	void TerrManager::ResetFrontier(const SepFace& frontier)
+	{
+		m_frontierFace = frontier;
+	}
 }
