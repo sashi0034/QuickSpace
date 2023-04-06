@@ -23,6 +23,7 @@ namespace QuickSpace::Play
 		[[nodiscard]] Vec2 Midpoint(float rate) const;
 		[[nodiscard]] TerrVertexRef GetStart() const;
 		[[nodiscard]] TerrVertexRef GetEnd() const;
+		[[nodiscard]] int GetLength() const;
 		void SetFixed(bool flag);
 		bool IsFixed() const;
 

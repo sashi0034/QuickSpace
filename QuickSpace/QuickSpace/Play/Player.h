@@ -21,19 +21,23 @@ namespace QuickSpace::Play
 		TerrEdgeRef& GetEdgeTarget();
 	private:
 		EPlayerState m_state = EPlayerState::Moving;
-		TerrEdgeRef m_edgeTarget{};
-		Float2 m_edgeCursor{};
-		Array<SepEdge> m_drawnEdges{};
+		TerrEdgeRef m_edgeTarget{}; // 接触中の辺
+		Float2 m_edgeCursor{}; // プレイヤーのカーソル
+		Array<SepEdge> m_drawnEdges{}; // 現在描画中の辺
+
 		Point roundEdgeCursor() const;
 		float getSpeed() const;
 
 		float m_animValue{};
 
 		void moveOnEdge();
+		void changeEdgeTargetAutoAfterMoved();
 		void moveWithDraw();
+		bool canRotateDrawingDirection(EAngle angle);
 		bool checkStartDrawing(EAngle angle);
 		void startDrawing(EAngle angle);
 		void continueDrawing(EAngle angle, const TerrVertexRef& oldEnd);
+		void rotateDrawingDirection(EAngle angle);
 		void checkFinishDrawing();
 		void confirmDrawingEdge();
 		void extendDrawingEdge(EAngle direction);

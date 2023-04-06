@@ -60,6 +60,26 @@ namespace QuickSpace::Play
 		return Scene::DeltaTime() * 1000.0f * 0.5f;
 	}
 
+	void Player::changeEdgeTargetAutoAfterMoved()
+	{
+		if (m_edgeCursor.asPoint() == *m_edgeTarget->GetStart())
+		{
+			for (auto&& edge : m_edgeTarget->Neighbors())
+			{
+				if (*edge.OverlappedVertex != *m_edgeTarget->GetStart()) continue;
+				if (auto&& neighborRef = edge.NeighborRef.lock()) m_edgeTarget = neighborRef;
+			}
+		}
+		else if (m_edgeCursor.asPoint() == *m_edgeTarget->GetEnd())
+		{
+			for (auto&& edge : m_edgeTarget->Neighbors())
+			{
+				if (*edge.OverlappedVertex != *m_edgeTarget->GetEnd()) continue;
+				if (auto&& neighborRef = edge.NeighborRef.lock()) m_edgeTarget = neighborRef;
+			}
+		}
+	}
+
 	void Player::moveOnEdge()
 	{
 		const float speed = getSpeed();
@@ -67,9 +87,15 @@ namespace QuickSpace::Play
 
 		// 辺と同じ方向
 		if (inputAngle(edgeDirection).pressed())
+		{
 			m_edgeTarget->MoveOnEdge(&m_edgeCursor, edgeDirection, speed);
+			changeEdgeTargetAutoAfterMoved();
+		}
 		else if (inputAngle(Angle(edgeDirection).Reverse()).pressed())
+		{
 			m_edgeTarget->MoveOnEdge(&m_edgeCursor, Angle(edgeDirection).Reverse(), speed);
+			changeEdgeTargetAutoAfterMoved();
+		}
 		// 直角向きの入力
 		else if (inputAngle(Angle(edgeDirection).Clockwise()).pressed())
 			checkMoveIntersect(Angle(edgeDirection).Clockwise(), speed, m_edgeTarget->IsHorizontal());
@@ -118,7 +144,7 @@ namespace QuickSpace::Play
 
 		const auto cursorExtended =
 			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(direction).ToPoint() * ConstParam::LineMargin);
-		auto cursorExtendedEdge = SepEdge(m_edgeTarget->GetStart(), cursorExtended);
+		const auto cursorExtendedEdge = SepEdge(m_edgeTarget->GetStart(), cursorExtended);
 		// 他の描画中の辺と交わらないようにする
 		for (auto&& drawnEdge : m_drawnEdges)
 		{
@@ -149,18 +175,47 @@ namespace QuickSpace::Play
 			// 描画終了かチェック
 			checkFinishDrawing();
 		}
-		// 線の方向切り替え
-		else if (inputAngle(Angle(direction).Clockwise()).pressed())
+		// 一定距離以上ドローしたら線の方向切り替えチェック
+		else if (m_edgeTarget->GetLength() > ConstParam::LineMargin)
 		{
-			confirmDrawingEdge();
-			continueDrawing(Angle(direction).Clockwise(), m_edgeTarget->GetEnd());
+			if (inputAngle(Angle(direction).Clockwise()).pressed())
+				rotateDrawingDirection(Angle(direction).Clockwise());
+			else if (inputAngle(Angle(direction).Counterclockwise()).pressed())
+				rotateDrawingDirection(Angle(direction).Counterclockwise());
 		}
-		else if (inputAngle(Angle(direction).Counterclockwise()).pressed())
-		{
-			confirmDrawingEdge();
-			continueDrawing(Angle(direction).Counterclockwise(), m_edgeTarget->GetEnd());
-		}
+	}
 
+	void Player::rotateDrawingDirection(EAngle angle)
+	{
+		if (canRotateDrawingDirection(angle) == false) return;
+
+		confirmDrawingEdge();
+		continueDrawing(angle, m_edgeTarget->GetEnd());
+	}
+
+
+	bool Player::canRotateDrawingDirection(EAngle angle)
+	{
+		// 描画中の線の向きを変更できるかチェック
+
+		const auto cursorExtendedEdge = std::make_shared<SepEdge>(
+			std::make_shared<Point>(m_edgeCursor.asPoint()),
+			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(angle).ToPoint() * (ConstParam::LineMargin + 1)));
+
+		// 他の描画中の辺と交わらないようにする
+		for (auto&& drawnEdge : m_drawnEdges)
+		{
+			// 同じ向きのやつとも重ならないようにするためちょっとだけ間隔を開けておく
+			// share_ptrここで使うの重いから別の方法がいいかも...
+			auto drawnEdgeExtended = SepEdge(
+				std::make_shared<Point>(*drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
+				std::make_shared<Point>(*drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
+			if (drawnEdgeExtended.IsIntersectWith(*cursorExtendedEdge) == false) continue;
+
+			// 交わったのでキャンセル
+			return false;
+		}
+		return true;
 	}
 
 	float getNeighborDelta(const TerrEdgeNeighbor neighbor, Point cursor, bool isHorizontal)

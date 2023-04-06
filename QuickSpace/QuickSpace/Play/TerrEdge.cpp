@@ -28,6 +28,11 @@ namespace QuickSpace::Play
 		return m_endPos;
 	}
 
+	int TerrEdge::GetLength() const
+	{
+		return (*m_startPos - *m_endPos).manhattanLength();
+	}
+
 	void TerrEdge::SetFixed(bool flag)
 	{
 		m_isFixed = flag;
