@@ -12,6 +12,7 @@ namespace QuickSpace::Play
 		bool IsIntersectWith(const SepEdge& other) const;
 		bool IsOverlappedVertex(const TerrVertexRef& vertex) const;
 		bool IsOverlappedVertex(const Point& vertex) const;
+		bool IsShareVertexWith(const SepEdge& other) const;
 		int GetLength() const;
 		Point CalcIntersected(const SepEdge& other) const;
 		TerrVertexRef& GetStart();

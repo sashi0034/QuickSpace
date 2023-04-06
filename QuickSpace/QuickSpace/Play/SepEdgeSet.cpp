@@ -105,8 +105,7 @@ namespace QuickSpace::Play
 
 				if ((*checkedFlags)[i]) continue;
 				auto&& edge = m_edges[i];
-				if (*rootRef->m_edges.back().GetEnd() != *edge.GetStart() &&
-					*rootRef->m_edges.back().GetStart() != *edge.GetEnd()) continue;
+				if (rootRef->m_edges.back().IsShareVertexWith(edge) == false) continue;
 
 				// 末尾要素の始点か終点につながったら追加
 

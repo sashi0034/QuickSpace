@@ -40,6 +40,14 @@ namespace QuickSpace:: Play
 		return TerrEdge::IsOverlappedVertexBetween(m_start, m_end, vertex);
 	}
 
+	bool SepEdge::IsShareVertexWith(const SepEdge& other) const
+	{
+		return	*m_start == *other.m_start ||
+				*m_start == *other.m_end ||
+				*m_end == *other.m_start ||
+				*m_end == *other.m_end;
+	}
+
 	int SepEdge::GetLength() const
 	{
 		return (*m_start - *m_end).manhattanLength();

@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "PlayManager.h"
 #include "QuickSpace/ConstParam.h"
+#include "QuickSpace/GameRoot.h"
 
 namespace QuickSpace::Play
 {
@@ -48,6 +49,12 @@ namespace QuickSpace::Play
 			auto color = Color{160, 64, 196};
 			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge) color.b = 0;
 			(void)Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth, color);
+		}
+
+		auto&& font = GameAsset::Instance().font16;
+		for (auto&& edge : m_edgeList)
+		{
+			font(*edge->GetStart()).drawAt(*edge->GetStart() + Point::Up(12));
 		}
 
 		ActorBase::Update();

@@ -14,6 +14,8 @@ namespace QuickSpace
 		REGISTER_GAMEASSET_PNG(bg_savannah);
 		// REGISTER_GAMEASSET_PNG(tex_savannah)
 
+		Font font16{ 16 };
+		Font font24{ 24 };
 	private:
 		Texture loadPng(String fileName);
 	};
