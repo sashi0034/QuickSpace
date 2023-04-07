@@ -40,6 +40,11 @@ namespace QuickSpace:: Play
 		return TerrEdge::IsOverlappedVertexBetween(m_start, m_end, vertex);
 	}
 
+	bool SepEdge::IsTipVertex(const Point& other) const
+	{
+		return *m_start == other || *m_end == other;
+	}
+
 	bool SepEdge::IsShareVertexWith(const SepEdge& other) const
 	{
 		return	*m_start == *other.m_start ||
@@ -79,6 +84,11 @@ namespace QuickSpace:: Play
 	Angle SepEdge::GetDirection() const
 	{
 		return Angle(TerrEdge::CalcDirectionBetween(m_start, m_end));
+	}
+
+	void SepEdge::SwapStartAndEnd()
+	{
+		m_end.swap(m_start);
 	}
 
 	bool SepEdge::isHorizontal() const

@@ -12,6 +12,7 @@ namespace QuickSpace::Play
 		bool IsIntersectWith(const SepEdge& other) const;
 		bool IsOverlappedVertex(const TerrVertexRef& vertex) const;
 		bool IsOverlappedVertex(const Point& vertex) const;
+		bool IsTipVertex(const Point& other) const;
 		bool IsShareVertexWith(const SepEdge& other) const;
 		int GetLength() const;
 		Point CalcIntersected(const SepEdge& other) const;
@@ -19,6 +20,7 @@ namespace QuickSpace::Play
 		TerrVertexRef& GetEnd();
 		Point GetVec() const;
 		Angle GetDirection() const;
+		void SwapStartAndEnd();
 	private:
 		bool isHorizontal() const;
 

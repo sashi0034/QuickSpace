@@ -90,22 +90,27 @@ namespace QuickSpace::Play
 		// 先頭の辺の始点を終端としてつないでいく
 		followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetStart(), false);
 		// すぐに始点を含む辺とつながったらサイズ2で終了してしまうので、終点を終端とする
-		if (m_edges.size() != sortedSet.m_edges.size()) followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetEnd(), false);
+		if (m_edges.size() != sortedSet.m_edges.size())
+			followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetEnd(), false);
 
 		// 各辺の始点と終点がつながるように
 		for (int i1=0; i1 <= sortedSet.m_edges.size() - 1; ++i1)
 		{
 			int i2 = (i1 + 1) % sortedSet.m_edges.size();
-			if (*sortedSet.m_edges[i1].GetEnd() == *sortedSet.m_edges[i2].GetStart()) continue;
-			sortedSet.m_edges[i1] = SepEdge(sortedSet.m_edges[i1].GetEnd(), sortedSet.m_edges[i1].GetStart());
+			if (*sortedSet.m_edges[i1].GetStart() == *sortedSet.m_edges[i2].GetStart() ||
+				*sortedSet.m_edges[i1].GetStart() == *sortedSet.m_edges[i2].GetEnd())
+				sortedSet.m_edges[i1].SwapStartAndEnd();
 		}
 
 		// 反時計回りだったら時計回りにする
 		if (sortedSet.isClockwiseAsCircuit() == false)
+		{
 			sortedSet.m_edges.reverse();
+			for (auto&& edge : sortedSet.m_edges) edge.SwapStartAndEnd();
+		}
 
 		const auto polygonPoints =
-			sortedSet.m_edges.map([](SepEdge edge){return Vec2(edge.GetStart()->xy()); });
+			sortedSet.m_edges.map([](SepEdge edge){ return Vec2(edge.GetStart()->xy()); });
 
 		return Polygon(polygonPoints);
 	}
@@ -139,8 +144,7 @@ namespace QuickSpace::Play
 		while (true)
 		{
 			// 終点につながるまで操作
-			if (canFinishAtFrontEdge &&
-				*routeRef->m_edges.back().GetEnd() == endPoint || *routeRef->m_edges.back().GetStart() == endPoint) break;
+			if (canFinishAtFrontEdge && routeRef->m_edges.back().IsTipVertex(endPoint)) break;
 			canFinishAtFrontEdge = true;
 
 			// 計算経路の配列の末尾要素につながるものを足していく
