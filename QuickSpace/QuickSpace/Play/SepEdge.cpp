@@ -19,8 +19,8 @@ namespace QuickSpace:: Play
 
 	bool SepEdge::IsIntersectWith(const SepEdge& other) const
 	{
-		if (isHorizontal() == other.isHorizontal()) return false;
-		if (isHorizontal())
+		if (IsHorizontal() == other.IsHorizontal()) return false;
+		if (IsHorizontal())
 			return
 				Util::RangeInt::FromSort(m_start->x, m_end->x).IsBetween(other.m_start->x) &&
 				Util::RangeInt::FromSort(other.m_start->y, other.m_end->y).IsBetween(m_start->y);
@@ -61,7 +61,7 @@ namespace QuickSpace:: Play
 	Point SepEdge::CalcIntersected(const SepEdge& other) const
 	{
 		// assert(IsIntersectWith(other));
-		return isHorizontal()
+		return IsHorizontal()
 			? Point(other.m_start->x, m_start->y)
 			: Point(m_start->x, other.m_start->y);
 	}
@@ -91,7 +91,7 @@ namespace QuickSpace:: Play
 		m_end.swap(m_start);
 	}
 
-	bool SepEdge::isHorizontal() const
+	bool SepEdge::IsHorizontal() const
 	{
 		return m_start->y == m_end->y;
 	}

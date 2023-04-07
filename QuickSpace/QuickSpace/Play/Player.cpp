@@ -109,7 +109,7 @@ namespace QuickSpace::Play
 	{
 		const auto intersected = PlayManager::Instance().Territory().Frontier().IntersectWith(SepEdge(m_edgeTarget));
 		if (intersected.has_value() == false) return;
-		auto intersectedPoint = intersected.value().CalcIntersected(SepEdge(m_edgeTarget));
+		const auto intersectedPoint = intersected.value().CalcIntersected(SepEdge(m_edgeTarget));
 		if (intersectedPoint == *m_edgeTarget->GetStart()) return;
 
 		// 線を引く処理終了
@@ -245,6 +245,8 @@ namespace QuickSpace::Play
 	bool Player::checkStartDrawing(EAngle angle)
 	{
 		if (GameInput::Instance().Ok().pressed() == false) return false;
+		if (PlayManager::Instance().Territory().Frontier()
+			.IsPointInside(roundEdgeCursor() + Angle(angle).ToPoint()) == false) return false;
 
 		// TODO: 線を引いてもいい場所かチェックする処理
 		// 線を引けるので開始

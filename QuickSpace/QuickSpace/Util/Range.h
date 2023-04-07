@@ -20,6 +20,12 @@ namespace QuickSpace::Util
 			return Range<T>(value1, value2);
 		}
 
+		Range<T> ExtendRange(T extension)
+		{
+			if (extension < 0) return FromSort(m_Min - extension, m_Max + extension);
+			return Range(m_Min - extension, m_Max + extension);
+		}
+
 		T GetDiff() const{
 			return m_Max - m_Min;
 		}

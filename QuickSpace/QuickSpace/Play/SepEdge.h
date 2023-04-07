@@ -21,8 +21,8 @@ namespace QuickSpace::Play
 		Point GetVec() const;
 		Angle GetDirection() const;
 		void SwapStartAndEnd();
+		bool IsHorizontal() const;
 	private:
-		bool isHorizontal() const;
 
 		TerrVertexRef m_start{};
 		TerrVertexRef m_end{};
