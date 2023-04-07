@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "SepEdgeSet.h"
 #include "SepFace.h"
 #include "TerrEdge.h"
 #include "QuickSpace/ActorBase.h"
@@ -13,8 +14,10 @@ namespace QuickSpace::Play
 		Array<TerrEdgeRef>& Edges();
 		SepFace& Frontier();
 		void ResetFrontier(const SepFace& frontier);
+		void AddOccupiedArea(SepEdgeSet edgeSet);
 	private:
 		SepFace m_frontierFace{};
+		Array<Polygon> m_occupiedAreas{};
 		Array<TerrEdgeRef> m_edgeList{};
 	};
 }

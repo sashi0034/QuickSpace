@@ -17,6 +17,7 @@ namespace QuickSpace::Play
 		Point CalcIntersected(const SepEdge& other) const;
 		TerrVertexRef& GetStart();
 		TerrVertexRef& GetEnd();
+		Point GetVec() const;
 		Angle GetDirection() const;
 	private:
 		bool isHorizontal() const;

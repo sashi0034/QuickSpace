@@ -14,14 +14,16 @@ namespace QuickSpace::Play
 		void TryDivideEdge(const TerrVertexRef& vertex);
 
 		// 純粋な閉路から経路探索
-		SepEdgeSetTwoRoot CalcRootAsPureCircuit(const Point& startPoint, const Point& endPoint);
+		SepEdgeSetTwoRoot CalcRouteAsPureCircuit(const Point& startPoint, const Point& endPoint);
 
 		Array<SepEdge>& Edges();
+		Polygon ConstructPolygon();
 	private:
 		Array<SepEdge> m_edges{};
 
-		void followAndConnectEdges(SepEdgeSet* rootRef, Array<bool>* checkedFlags, const Point& endPoint);
+		void followAndConnectEdges(SepEdgeSet* routeRef, Array<bool>* checkedFlags, const Point& endPoint, bool canFinishAtFrontEdge);
 		int sumEdgeDistance();
+		bool isClockwiseAsCircuit() const;
 	};
 
 	struct SepEdgeSetTwoRoot

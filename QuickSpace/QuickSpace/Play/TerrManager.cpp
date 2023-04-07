@@ -39,9 +39,18 @@ namespace QuickSpace::Play
 
 	void TerrManager::Update()
 	{
+		// 面描画
+		for (auto&& area : m_occupiedAreas)
+		{
+			auto color = Color{220, 64, 240};
+			(void)area.draw(color);
+		}
+
+		// 線描画
 		constexpr int lineWidth = ConstParam::LineWidth;
 		for (auto&& edge : m_edgeList)
 		{
+			// 影
 			Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth + 2, Color{32, 32,48});
 		}
 		for (auto&& edge : m_edgeList)
@@ -55,6 +64,7 @@ namespace QuickSpace::Play
 		for (auto&& edge : m_edgeList)
 		{
 			font(*edge->GetStart()).drawAt(*edge->GetStart() + Point::Up(12));
+			font(*edge->GetEnd()).drawAt(*edge->GetEnd() + Point::Up(12));
 		}
 
 		ActorBase::Update();
@@ -73,5 +83,10 @@ namespace QuickSpace::Play
 	void TerrManager::ResetFrontier(const SepFace& frontier)
 	{
 		m_frontierFace = frontier;
+	}
+
+	void TerrManager::AddOccupiedArea(SepEdgeSet edgeSet)
+	{
+		m_occupiedAreas.push_back(edgeSet.ConstructPolygon());
 	}
 }

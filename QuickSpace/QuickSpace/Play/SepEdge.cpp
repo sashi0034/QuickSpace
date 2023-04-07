@@ -71,6 +71,11 @@ namespace QuickSpace:: Play
 		return m_end;
 	}
 
+	Point SepEdge::GetVec() const
+	{
+		return *m_end - *m_start;
+	}
+
 	Angle SepEdge::GetDirection() const
 	{
 		return Angle(TerrEdge::CalcDirectionBetween(m_start, m_end));

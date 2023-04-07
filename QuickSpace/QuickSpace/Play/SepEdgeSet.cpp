@@ -34,7 +34,7 @@ namespace QuickSpace::Play
 	}
 
 
-	SepEdgeSetTwoRoot SepEdgeSet::CalcRootAsPureCircuit(const Point& startPoint, const Point& endPoint)
+	SepEdgeSetTwoRoot SepEdgeSet::CalcRouteAsPureCircuit(const Point& startPoint, const Point& endPoint)
 	{
 		if (startPoint == endPoint) return SepEdgeSetTwoRoot{{}, *this};
 
@@ -55,26 +55,59 @@ namespace QuickSpace::Play
 			else {assert(false);}
 		}
 
-		SepEdgeSet root1{};
-		SepEdgeSet root2{};
+		SepEdgeSet route1{};
+		SepEdgeSet route2{};
 
-		root1.m_edges.push_back(m_edges[startEdgeId1]);
-		root2.m_edges.push_back(m_edges[startEdgeId2]);
+		route1.m_edges.push_back(m_edges[startEdgeId1]);
+		route2.m_edges.push_back(m_edges[startEdgeId2]);
 
-		followAndConnectEdges(&root1, &checkedFlags, endPoint);
-		followAndConnectEdges(&root2, &checkedFlags, endPoint);
+		followAndConnectEdges(&route1, &checkedFlags, endPoint, true);
+		followAndConnectEdges(&route2, &checkedFlags, endPoint, true);
 
-		int rootDistance1 = root1.sumEdgeDistance();
-		int rootDistance2 = root2.sumEdgeDistance();
+		int routeDistance1 = route1.sumEdgeDistance();
+		int routeDistance2 = route2.sumEdgeDistance();
 
-		return rootDistance1 < rootDistance2
-			? SepEdgeSetTwoRoot{root1, root2}
-			: SepEdgeSetTwoRoot{root2, root1};
+		return routeDistance1 < routeDistance2
+			? SepEdgeSetTwoRoot{route1, route2}
+			: SepEdgeSetTwoRoot{route2, route1};
 	}
 
 	Array<SepEdge>& SepEdgeSet::Edges()
 	{
 		return m_edges;
+	}
+
+	Polygon SepEdgeSet::ConstructPolygon()
+	{
+		if (m_edges.size() == 0) return Polygon{};
+
+		SepEdgeSet sortedSet{};
+		auto checkedFlags = Array<bool>(m_edges.size());
+
+		sortedSet.m_edges.push_back(m_edges[0]);
+		checkedFlags[0] = true;
+
+		// 先頭の辺の始点を終端としてつないでいく
+		followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetStart(), false);
+		// すぐに始点を含む辺とつながったらサイズ2で終了してしまうので、終点を終端とする
+		if (m_edges.size() != sortedSet.m_edges.size()) followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetEnd(), false);
+
+		// 各辺の始点と終点がつながるように
+		for (int i1=0; i1 <= sortedSet.m_edges.size() - 1; ++i1)
+		{
+			int i2 = (i1 + 1) % sortedSet.m_edges.size();
+			if (*sortedSet.m_edges[i1].GetEnd() == *sortedSet.m_edges[i2].GetStart()) continue;
+			sortedSet.m_edges[i1] = SepEdge(sortedSet.m_edges[i1].GetEnd(), sortedSet.m_edges[i1].GetStart());
+		}
+
+		// 反時計回りだったら時計回りにする
+		if (sortedSet.isClockwiseAsCircuit() == false)
+			sortedSet.m_edges.reverse();
+
+		const auto polygonPoints =
+			sortedSet.m_edges.map([](SepEdge edge){return Vec2(edge.GetStart()->xy()); });
+
+		return Polygon(polygonPoints);
 	}
 
 	int SepEdgeSet::sumEdgeDistance()
@@ -87,12 +120,28 @@ namespace QuickSpace::Play
 		return sum;
 	}
 
-	void SepEdgeSet::followAndConnectEdges(SepEdgeSet* rootRef, Array<bool>* checkedFlags, const Point& endPoint)
+	bool SepEdgeSet::isClockwiseAsCircuit() const
+	{
+		int sum = 0;
+		for (int i=0; i<m_edges.size(); ++i)
+		{
+			const auto vec1 = m_edges[i].GetVec();
+			const auto vec2 = m_edges[(i + 1) % m_edges.size()].GetVec();
+
+			sum += vec1.x * (-vec2.y) - (-vec1.y) * vec2.x;
+		}
+		return sum < 0;
+	}
+
+	void SepEdgeSet::followAndConnectEdges(
+		SepEdgeSet* routeRef, Array<bool>* checkedFlags, const Point& endPoint, bool canFinishAtFrontEdge)
 	{
 		while (true)
 		{
 			// 終点につながるまで操作
-			if (*rootRef->m_edges.back().GetEnd() == endPoint || *rootRef->m_edges.back().GetStart() == endPoint) break;
+			if (canFinishAtFrontEdge &&
+				*routeRef->m_edges.back().GetEnd() == endPoint || *routeRef->m_edges.back().GetStart() == endPoint) break;
+			canFinishAtFrontEdge = true;
 
 			// 計算経路の配列の末尾要素につながるものを足していく
 			for (int i = 0;; ++i)
@@ -105,12 +154,12 @@ namespace QuickSpace::Play
 
 				if ((*checkedFlags)[i]) continue;
 				auto&& edge = m_edges[i];
-				if (rootRef->m_edges.back().IsShareVertexWith(edge) == false) continue;
+				if (routeRef->m_edges.back().IsShareVertexWith(edge) == false) continue;
 
 				// 末尾要素の始点か終点につながったら追加
 
 				(*checkedFlags)[i] = true;
-				rootRef->m_edges.push_back(edge);
+				routeRef->m_edges.push_back(edge);
 				break;
 			}
 		}

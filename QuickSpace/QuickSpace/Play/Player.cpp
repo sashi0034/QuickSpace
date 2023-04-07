@@ -138,9 +138,12 @@ namespace QuickSpace::Play
 		auto tempFrontier = SepEdgeSet(PlayManager::Instance().Territory().Frontier().Edges());
 		tempFrontier.TryDivideEdge(m_drawnEdges.front().GetStart());
 		tempFrontier.TryDivideEdge(m_drawnEdges.back().GetEnd());
-		auto dividedFrontier = tempFrontier.CalcRootAsPureCircuit(*m_drawnEdges.front().GetStart(), *m_drawnEdges.back().GetEnd());
+		auto dividedFrontier = tempFrontier.CalcRouteAsPureCircuit(*m_drawnEdges.front().GetStart(), *m_drawnEdges.back().GetEnd());
 
-		PlayManager::Instance().Territory().ResetFrontier(SepFace(dividedFrontier.LongRoot.Edges().append(m_drawnEdges)));
+		PlayManager::Instance().Territory().ResetFrontier(
+			SepFace(dividedFrontier.LongRoot.Edges().append(m_drawnEdges)));
+		PlayManager::Instance().Territory().AddOccupiedArea(
+			SepEdgeSet(dividedFrontier.ShortRoot.Edges().append(m_drawnEdges)));
 
 		m_drawnEdges.clear();
 	}
@@ -214,7 +217,7 @@ namespace QuickSpace::Play
 
 		const auto cursorExtendedEdge = std::make_shared<SepEdge>(
 			std::make_shared<Point>(m_edgeCursor.asPoint()),
-			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(angle).ToPoint() * (ConstParam::LineMargin + 1)));
+			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(angle).ToPoint() * (ConstParam::LineMargin * 2)));
 
 		// 他の描画中の辺と交わらないようにする
 		for (auto&& drawnEdge : m_drawnEdges)
