@@ -107,14 +107,17 @@ namespace QuickSpace::Play
 
 	void Player::checkFinishDrawing()
 	{
-		const auto intersected = PlayManager::Instance().Territory().Frontier().IntersectWith(SepEdge(m_edgeTarget));
-		if (intersected.has_value() == false) return;
-		const auto intersectedPoint = intersected.value().CalcIntersected(SepEdge(m_edgeTarget));
-		if (intersectedPoint == *m_edgeTarget->GetStart()) return;
+		for (auto&& checking : PlayManager::Instance().Territory().Frontier().Edges())
+		{
+			if (checking.IsIntersectWith(SepEdge(m_edgeTarget)) == false) continue;
+			const auto intersectedPoint = checking.CalcIntersected(SepEdge(m_edgeTarget));
+			if (intersectedPoint == *m_edgeTarget->GetStart()) continue;;
 
-		// 線を引く処理終了
+			// 線を引く処理終了
 
-		finishDrawing(intersectedPoint);
+			finishDrawing(intersectedPoint);
+			break;
+		}
 	}
 
 	void Player::finishDrawing(Point intersectedPoint)
