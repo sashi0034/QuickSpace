@@ -10,9 +10,19 @@ namespace QuickSpace
 		(void)texture.mapped(size * scale).scaled(1 / scale).draw(pos);
 	}
 
-	int Util::AnimFrameIndex(float controller, const int frameNumber, const int frameDuration)
+	int Util::AnimFrameIndexF(float controller, const int frameNumber, const int frameDuration)
 	{
 		return static_cast<int>(controller * 1000) / frameDuration % frameNumber;
+	}
+
+	int Util::AnimFrameIndex(int controller, const int frameNumber, const int frameDuration)
+	{
+		return controller / frameDuration % frameNumber;
+	}
+
+	int Util::AnimFrameIndex(uint64 controller, const int frameNumber, const int frameDuration)
+	{
+		return controller / frameDuration % frameNumber;
 	}
 
 	String Util::ConcatStringWithBreak(const Array<String>& array)

@@ -9,18 +9,24 @@ using namespace AngelScript;
 
 namespace QuickSpace::Play
 {
+	constexpr int chipSize = 16;
+	inline int animFrameChip(int number, int duration)
+	{
+		return chipSize * Util::AnimFrameIndex(Time::GetMillisec(), number, duration);
+	}
+
 	void DrawBgChip(int32 x, int32 y, int32 kind)
 	{
-		constexpr int chipSize = 16;
+
 		constexpr int actualChipSize = chipSize * ConstParam::PixelartScale;
 		const int scale = ConstParam::PixelartScale;
 		const Vec2 pos = Scene::Center() + Vec2{x, y} * actualChipSize;
 
 		auto&& asset = GameAsset::Instance();
 		// 茂み1
-		if (kind == 0) (void)asset.bush_16x16(0, 0, chipSize, chipSize).scaled(scale).draw(pos);
+		if (kind == 0) (void)asset.bush_16x16(animFrameChip(2, 500), 0, chipSize, chipSize).scaled(scale).draw(pos);
 		// 茂み2
-		else if (kind == 1) (void)asset.bush_16x16(0, chipSize, chipSize, chipSize).scaled(scale).draw(pos);
+		else if (kind == 1) (void)asset.bush_16x16(animFrameChip(2, 500), chipSize, chipSize, chipSize).scaled(scale).draw(pos);
 		// 石ころ
 		else if (kind == 2) (void)asset.mixed_nature_16x16(0, 0, chipSize, chipSize).scaled(scale).draw(pos);
 		// 岩
@@ -32,9 +38,9 @@ namespace QuickSpace::Play
 		// 固い岩
 		else if (kind == 6) (void)asset.solid_rock_16x16(0, 0, chipSize, chipSize).scaled(scale).draw(pos);
 		// 雑草
-		else if (kind == 7) (void)asset.thin_weed_16x16(0, 0, chipSize, chipSize).scaled(scale).draw(pos);
+		else if (kind == 7) (void)asset.thin_weed_16x16(animFrameChip( 4, 200), 0, chipSize, chipSize).scaled(scale).draw(pos);
 		// 木
-		else if (kind == 8) (void)asset.tree_16x16(0, 0, chipSize, chipSize).scaled(scale).draw(pos);
+		else if (kind == 8) (void)asset.tree_16x16(animFrameChip( 4, 250), 0, chipSize, chipSize).scaled(scale).draw(pos);
 	}
 
 	PlayBg::PlayBg()

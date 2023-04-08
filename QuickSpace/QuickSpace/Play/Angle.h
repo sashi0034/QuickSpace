@@ -13,6 +13,7 @@ namespace QuickSpace::Play
 	class Angle
 	{
 	public:
+		Angle() = default;
 		explicit Angle(EAngle value) : m_value(value){}
 		[[nodiscard]] EAngle Value() const;
 		EAngle Reverse() const;
@@ -24,6 +25,6 @@ namespace QuickSpace::Play
 
 		static Angle ConvertFrom(const Vec2& vec);
 	private:
-		EAngle m_value;
+		EAngle m_value{};
 	};
 }

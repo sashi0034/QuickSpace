@@ -23,12 +23,16 @@ namespace QuickSpace::Play
 		EPlayerState m_state = EPlayerState::Moving;
 		TerrEdgeRef m_edgeTarget{}; // 接触中の辺
 		Float2 m_edgeCursor{}; // プレイヤーのカーソル
+		Float2 m_edgeCursorBefore{};
+		Angle m_angle{};
 		Array<SepEdge> m_drawnEdges{}; // 現在描画中の辺
 
 		Point roundEdgeCursor() const;
 		float getSpeed() const;
 
 		float m_animValue{};
+
+		void drawPlayer() const;
 
 		void moveOnEdge();
 		void changeEdgeTargetAutoAfterMoved();

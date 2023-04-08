@@ -26,15 +26,7 @@ namespace QuickSpace::Play
 	{
 		m_animValue += Scene::DeltaTime();
 
-		const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
-
-		const auto position = m_edgeCursor;
-		constexpr int cellSize = 32;
-		const int cellIndex = Util::AnimFrameIndex(m_animValue, 4, 250);
-		(void)GameAsset::Instance().phine_32x32(cellIndex * cellSize, 0, cellSize, cellSize)
-			.scaled(ConstParam::PixelartScale)
-			.drawAt(position - Vec2{0, ConstParam::PixelartScale * cellSize / 2});
-
+		m_edgeCursorBefore = m_edgeCursor;
 
 		switch (m_state)
 		{
@@ -48,8 +40,57 @@ namespace QuickSpace::Play
 			assert(false);
 		}
 
+		if (m_edgeCursor != m_edgeCursorBefore) m_angle = Angle::ConvertFrom(m_edgeCursor - m_edgeCursorBefore);
+		drawPlayer();
+
 		ActorBase::Update();
 	}
+
+	void Player::drawPlayer() const
+	{
+		const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
+
+		const auto position = m_edgeCursor;
+		constexpr int cellSize = 32;
+		constexpr int frameDuration = 250;
+		const bool isWalking = m_edgeCursorBefore != m_edgeCursor;
+
+		Point cellPos{};
+		bool isMirrored = false;
+		switch (m_angle.Value())
+		{
+		case EAngle::Up:
+			cellPos = isWalking
+				? Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 5}
+				: Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 2};
+			break;
+		case EAngle::Right:
+			cellPos = isWalking
+				? Point{Util::AnimFrameIndexF(m_animValue, 5, frameDuration), 4}
+				: Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 1};
+			break;
+		case EAngle::Down:
+			cellPos = isWalking
+				? Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 3}
+				: Point{Util::AnimFrameIndexF(m_animValue, 5, frameDuration), 0};
+			break;
+		case EAngle::Left:
+			isMirrored = true;
+			cellPos = isWalking
+				? Point{Util::AnimFrameIndexF(m_animValue, 5, frameDuration), 4}
+				: Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 1};
+			break;
+		default: ;
+		}
+
+		auto&& image =
+			GameAsset::Instance().phine_32x32(cellPos.x * cellSize, cellPos.y * cellSize, cellSize, cellSize);
+		if (isMirrored) image = image.mirrored();
+		(void)image
+			.scaled(ConstParam::PixelartScale)
+			.drawAt(position - Vec2{0, ConstParam::PixelartScale * cellSize / 2});
+	}
+
 
 	Point Player::roundEdgeCursor() const
 	{
