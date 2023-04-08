@@ -6,5 +6,6 @@ namespace QuickSpace
 	{
 		void FillTexture(const Texture& texture, float tileSize, const Size& size, const Vec2& pos);
 		int AnimFrameIndex(float controller, const int frameNumber, const int frameDuration);
+		String ConcatStringWithBreak(const Array<String>& array);
 	}
 }

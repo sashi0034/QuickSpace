@@ -14,4 +14,15 @@ namespace QuickSpace
 	{
 		return static_cast<int>(controller * 1000) / frameDuration % frameNumber;
 	}
+
+	String Util::ConcatStringWithBreak(const Array<String>& array)
+	{
+		String result{};
+		for (int i=0; i<array.size(); ++i)
+		{
+			result += array[i];
+			if (i < array.size() - 1) result += U"\n";
+		}
+		return result;
+	}
 }
