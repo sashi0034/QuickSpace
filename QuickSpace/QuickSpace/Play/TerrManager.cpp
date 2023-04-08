@@ -39,12 +39,7 @@ namespace QuickSpace::Play
 
 	void TerrManager::Update()
 	{
-		// 面描画
-		for (auto&& area : m_occupiedAreas)
-		{
-			auto color = Color{220, 64, 240};
-			(void)area.draw(color);
-		}
+		drawOccupiedAreas();
 
 		// 線描画
 		constexpr int lineWidth = ConstParam::LineWidth;
@@ -68,6 +63,25 @@ namespace QuickSpace::Play
 		}
 
 		ActorBase::Update();
+	}
+
+	void TerrManager::drawOccupiedAreas()
+	{
+		constexpr float animSpeed = 0.3f;
+		m_animCb->animRate = m_animCb->animRate + Scene::DeltaTime() * animSpeed;
+		Graphics2D::SetPSConstantBuffer(1, m_animCb);
+
+		Graphics2D::SetPSTexture(1, GameAsset::Instance().tex_aqua_noise);
+		Graphics2D::SetPSTexture(2, GameAsset::Instance().tex_cosmos_noise);
+
+		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyPolygon };
+
+		// 面描画
+		for (auto&& area : m_occupiedAreas)
+		{
+			auto color = Color{220, 64, 240, 224};
+			(void)area.draw(color);
+		}
 	}
 
 	Array<TerrEdgeRef>& TerrManager::Edges()

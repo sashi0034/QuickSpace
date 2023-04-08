@@ -117,6 +117,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="App\asset\shader\fantasy_polygon.hlsl" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="QuickSpace\ActorBase.cpp" />
     <ClCompile Include="QuickSpace\ActorManager.cpp" />
@@ -673,8 +674,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\asset\image\tex_aqua_noise.png" />
     <Content Include="App\asset\image\bg_savannah.png" />
     <Content Include="App\asset\image\bush_16x16.png" />
+    <Content Include="App\asset\image\tex_cosmos_noise.png" />
     <Content Include="App\asset\image\grass_tile_64x64.png" />
     <Content Include="App\asset\image\mixed_nature_16x16.png" />
     <Content Include="App\asset\image\phine_32x32.png" />
@@ -684,7 +687,6 @@
     <Content Include="App\asset\image\thin_weed_16x16.png" />
     <Content Include="App\asset\image\tree_16x16.png" />
     <Content Include="App\asset\script\Bg1.as" />
-    <Content Include="App\asset\script\test1.as" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

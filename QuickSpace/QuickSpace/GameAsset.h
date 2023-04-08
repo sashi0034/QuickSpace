@@ -19,10 +19,15 @@ namespace QuickSpace
 		REGISTER_GAMEASSET_PNG(thin_weed_16x16);
 		REGISTER_GAMEASSET_PNG(solid_rock_16x16);
 		REGISTER_GAMEASSET_PNG(mixed_nature_16x16);
+		REGISTER_GAMEASSET_PNG(tex_aqua_noise);
+		REGISTER_GAMEASSET_PNG(tex_cosmos_noise);
 		// REGISTER_GAMEASSET_PNG(tex_savannah)
 
-		Font font16{ 16 };
-		Font font24{ 24 };
+		const Font font16{ 16 };
+		const Font font24{ 24 };
+
+		const PixelShader psFantasyPolygon =
+			HLSL{ U"asset/shader/fantasy_polygon.hlsl", U"PS" };
 	private:
 		Texture loadPng(String fileName);
 	};
