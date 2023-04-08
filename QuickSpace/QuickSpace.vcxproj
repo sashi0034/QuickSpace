@@ -674,6 +674,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\asset\image\bg_savannah.png" />
+    <Content Include="App\asset\image\grass_tile_32x32.png" />
+    <Content Include="App\asset\image\grass_tile_64x64.png" />
     <Content Include="App\asset\image\phine_32x32.png" />
     <Content Include="App\asset\image\tex_savannah.png" />
     <Content Include="App\asset\image\pondelion_32x32.png" />

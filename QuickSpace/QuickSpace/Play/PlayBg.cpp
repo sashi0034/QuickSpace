@@ -1,15 +1,23 @@
 ﻿#include "stdafx.h"
 #include "PlayBg.h"
+
+#include "QuickSpace/ConstParam.h"
 #include "QuickSpace/GameAsset.h"
+#include "QuickSpace/Util/Utils.h"
 
 namespace QuickSpace::Play
 {
 	void PlayBg::Update()
 	{
-		GameAsset::Instance().bg_savannah.resized(Scene::Size()).drawAt(Scene::Center());
+		// const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
 
-		// auto size = Size{960, 960};
-		// Util::FillTexture(GameAsset::Instance().tex_savannah, (size / 2).x, size, Scene::Center() - size / 2);
+		const auto size = Scene::Size();
+		// TODO: 別の方法で
+		Util::FillTexture(
+			GameAsset::Instance().grass_tile_64x64,
+			GameAsset::Instance().grass_tile_64x64.width() * ConstParam::PixelartScale,
+			size,
+			Scene::Center() - size / 2);
 
 		ActorBase::Update();
 	}

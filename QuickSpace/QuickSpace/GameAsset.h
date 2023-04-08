@@ -12,6 +12,8 @@ namespace QuickSpace
 		REGISTER_GAMEASSET_PNG(phine_32x32);
 		REGISTER_GAMEASSET_PNG(pondelion_32x32);
 		REGISTER_GAMEASSET_PNG(bg_savannah);
+		REGISTER_GAMEASSET_PNG(grass_tile_32x32);
+		REGISTER_GAMEASSET_PNG(grass_tile_64x64);
 		// REGISTER_GAMEASSET_PNG(tex_savannah)
 
 		Font font16{ 16 };

@@ -272,7 +272,7 @@ namespace QuickSpace::Play
 		const float neighborDelta = getNeighborDelta(neighbor, roundEdgeCursor(), isHorizontal);
 		if (Math::Abs(neighborDelta) > 1)
 		{
-			if (checkStartDrawing(angle)) return;
+			if (Math::Abs(neighborDelta) > ConstParam::LineMargin && checkStartDrawing(angle)) return;
 
 			// 方向が違う隣接辺に遠いので近づく
 			if (neighborDelta < 0) m_edgeTarget->MoveOnEdge(&m_edgeCursor, isHorizontal ? EAngle::Left : EAngle::Up, speed);
