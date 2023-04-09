@@ -23,6 +23,7 @@ namespace QuickSpace::Play
 		ConstantBuffer<AnimCb> m_animCb{};
 
 		void drawOccupiedAreas();
+		void drawTerritoryLines();
 
 		SepFace m_frontierFace{};
 		Array<Polygon> m_occupiedAreas{};

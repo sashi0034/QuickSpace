@@ -117,6 +117,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="App\asset\shader\fantasy_line.hlsl" />
     <None Include="App\asset\shader\fantasy_polygon.hlsl" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="QuickSpace\ActorBase.cpp" />
@@ -674,6 +675,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\asset\image\tex_water_bubbles.png" />
     <Content Include="App\asset\image\tex_aqua_noise.png" />
     <Content Include="App\asset\image\bg_savannah.png" />
     <Content Include="App\asset\image\bush_16x16.png" />

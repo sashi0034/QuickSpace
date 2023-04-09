@@ -39,21 +39,13 @@ namespace QuickSpace::Play
 
 	void TerrManager::Update()
 	{
+		constexpr float animSpeed = 0.3f;
+		m_animCb->animRate = m_animCb->animRate + Scene::DeltaTime() * animSpeed;
+
 		drawOccupiedAreas();
 
 		// 線描画
-		constexpr int lineWidth = ConstParam::LineWidth;
-		for (auto&& edge : m_edgeList)
-		{
-			// 影
-			Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth + 2, Color{240, 122, 255});
-		}
-		for (auto&& edge : m_edgeList)
-		{
-			auto color = Color{160, 64, 196};
-			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge) color.b = 0;
-			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
-		}
+		drawTerritoryLines();
 
 		auto&& font = GameAsset::Instance().font16;
 		for (auto&& edge : m_edgeList)
@@ -67,8 +59,6 @@ namespace QuickSpace::Play
 
 	void TerrManager::drawOccupiedAreas()
 	{
-		constexpr float animSpeed = 0.3f;
-		m_animCb->animRate = m_animCb->animRate + Scene::DeltaTime() * animSpeed;
 		Graphics2D::SetPSConstantBuffer(1, m_animCb);
 
 		Graphics2D::SetPSTexture(1, GameAsset::Instance().tex_aqua_noise);
@@ -81,6 +71,32 @@ namespace QuickSpace::Play
 		{
 			auto color = Color{220, 64, 240, 224};
 			(void)area.draw(color);
+		}
+	}
+
+	void TerrManager::drawTerritoryLines()
+	{
+		const float animAmp = Math::Sin(m_animCb->animRate * Math::Pi * 2.5f);
+		const int lineWidth =
+			ConstParam::LineWidth - static_cast<int>(4.5f * Math::Abs(animAmp));
+		for (auto&& edge : m_edgeList)
+		{
+			// 影
+			Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth + 2, Color{240, 122, 255});
+		}
+
+		Graphics2D::SetPSConstantBuffer(1, m_animCb);
+
+		Graphics2D::SetPSTexture(1, GameAsset::Instance().tex_water_bubbles);
+
+		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyLine };
+
+		for (auto&& edge : m_edgeList)
+		{
+			const float brightness = 1 - (1 - Math::Abs(animAmp)) * 0.1f;
+			auto color = ColorF{144 / 240.0f, 64 / 255.0f, 176 / 255.0f} * brightness;
+			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge) color.b = 1.0f;
+			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
 		}
 	}
 
