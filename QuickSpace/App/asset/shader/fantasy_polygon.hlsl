@@ -42,7 +42,7 @@ cbuffer AnimCb : register(b1)
 float2 calcUvTex1(s3d::PSInput input)
 {
 	const float2 vecOne = {1.0f, 1.0f};
-	const float uvStep = 100.0;
+	const float uvStep = 96.0;
 
 	const float scrollSpeed = 2.0;
 	float2 uv = ((input.position.xy % uvStep) / uvStep) + ((scrollSpeed * g_animRate) % 1.0) * vecOne;
@@ -61,7 +61,7 @@ float2 calcUvTex1(s3d::PSInput input)
 float2 calcUvTex2(s3d::PSInput input)
 {
 	const float2 vecOne = {1.0f, 1.0f};
-	const float uvStep = 200.0;
+	const float uvStep = 96.0 * 2;
 
 	float2 uv = ((input.position.xy % uvStep) / uvStep);
 

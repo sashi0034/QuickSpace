@@ -19,7 +19,7 @@ namespace QuickSpace::Play
 	{
 		auto&& territory = PlayManager::Instance().Territory();
 		m_edgeTarget = territory.Edges()[0];
-		m_edgeCursor = m_edgeTarget->GetStart()->xy();
+		m_edgeCursor = m_edgeTarget->GetStart().xy();
 	}
 
 	void Player::Update()
@@ -104,19 +104,19 @@ namespace QuickSpace::Play
 
 	void Player::changeEdgeTargetAutoAfterMoved()
 	{
-		if (m_edgeCursor.asPoint() == *m_edgeTarget->GetStart())
+		if (m_edgeCursor.asPoint() == m_edgeTarget->GetStart())
 		{
 			for (auto&& edge : m_edgeTarget->Neighbors())
 			{
-				if (*edge.OverlappedVertex != *m_edgeTarget->GetStart()) continue;
+				if (edge.OverlappedVertex != m_edgeTarget->GetStart()) continue;
 				if (auto&& neighborRef = edge.NeighborRef.lock()) m_edgeTarget = neighborRef;
 			}
 		}
-		else if (m_edgeCursor.asPoint() == *m_edgeTarget->GetEnd())
+		else if (m_edgeCursor.asPoint() == m_edgeTarget->GetEnd())
 		{
 			for (auto&& edge : m_edgeTarget->Neighbors())
 			{
-				if (*edge.OverlappedVertex != *m_edgeTarget->GetEnd()) continue;
+				if (edge.OverlappedVertex != m_edgeTarget->GetEnd()) continue;
 				if (auto&& neighborRef = edge.NeighborRef.lock()) m_edgeTarget = neighborRef;
 			}
 		}
@@ -152,7 +152,7 @@ namespace QuickSpace::Play
 		{
 			if (checking.IsIntersectWith(SepEdge(m_edgeTarget)) == false) continue;
 			const auto intersectedPoint = checking.CalcIntersected(SepEdge(m_edgeTarget));
-			if (intersectedPoint == *m_edgeTarget->GetStart()) continue;;
+			if (intersectedPoint == m_edgeTarget->GetStart()) continue;;
 
 			// 線を引く処理終了
 
@@ -165,7 +165,8 @@ namespace QuickSpace::Play
 	{
 		confirmDrawingEdge();
 		m_edgeCursor = intersectedPoint;
-		*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+		m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
+		m_drawnEdges.back().ChangeEnd(m_edgeCursor.asPoint());
 
 		for (auto&& edge : PlayManager::Instance().Territory().Edges())
 		{
@@ -182,7 +183,7 @@ namespace QuickSpace::Play
 		auto tempFrontier = SepEdgeSet(PlayManager::Instance().Territory().Frontier().Edges());
 		tempFrontier.TryDivideEdge(m_drawnEdges.front().GetStart());
 		tempFrontier.TryDivideEdge(m_drawnEdges.back().GetEnd());
-		auto dividedFrontier = tempFrontier.CalcRouteAsPureCircuit(*m_drawnEdges.front().GetStart(), *m_drawnEdges.back().GetEnd());
+		auto dividedFrontier = tempFrontier.CalcRouteAsPureCircuit(m_drawnEdges.front().GetStart(), m_drawnEdges.back().GetEnd());
 
 		PlayManager::Instance().Territory().ResetFrontier(
 			SepFace(dividedFrontier.LongRoot.Edges().append(m_drawnEdges)));
@@ -201,11 +202,10 @@ namespace QuickSpace::Play
 	{
 		// 描画中に線を引き伸ばす
 		m_edgeCursor += Angle(direction).ToFloat2() * getSpeed();
-		*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+		m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
 
-		const auto cursorExtended =
-			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(direction).ToPoint() * ConstParam::LineMargin);
-		const auto cursorExtendedEdge = SepEdge(m_edgeTarget->GetStart(), cursorExtended);
+		const auto cursorExtended = Point(m_edgeCursor.asPoint() + Angle(direction).ToPoint() * ConstParam::LineMargin);
+		auto cursorExtendedEdge = SepEdge(m_edgeTarget->GetStart(), cursorExtended);
 		// 他の描画中の辺と交わらないようにする
 		for (auto&& drawnEdge : m_drawnEdges)
 		{
@@ -213,15 +213,15 @@ namespace QuickSpace::Play
 			// 同じ向きのやつとも重ならないようにするためちょっとだけ間隔を開けておく
 			// share_ptrここで使うの重いから別の方法がいいかも...
 			auto drawnEdgeExtended = SepEdge(
-				std::make_shared<Point>(*drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
-				std::make_shared<Point>(*drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
+				Point(drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
+				Point(drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
 			if (drawnEdgeExtended.IsIntersectWith(SepEdge(cursorExtendedEdge)) == false) continue;
 
 			auto intersectedPoint = drawnEdgeExtended.CalcIntersected(SepEdge(m_edgeTarget));
 			// 交わったので修正
-			*cursorExtended = intersectedPoint;
+			cursorExtendedEdge.ChangeEnd(intersectedPoint);
 			m_edgeCursor = intersectedPoint - Angle(direction).ToPoint() * ConstParam::LineMargin;
-			*m_edgeTarget->GetEnd() = m_edgeCursor.asPoint();
+			m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
 		}
 	}
 
@@ -260,8 +260,8 @@ namespace QuickSpace::Play
 		// 描画中の線の向きを変更できるかチェック
 
 		const auto cursorExtendedEdge = std::make_shared<SepEdge>(
-			std::make_shared<Point>(m_edgeCursor.asPoint()),
-			std::make_shared<Point>(m_edgeCursor.asPoint() + Angle(angle).ToPoint() * (ConstParam::LineMargin * 2)));
+				m_edgeCursor.asPoint(),
+			m_edgeCursor.asPoint() + Angle(angle).ToPoint() * (ConstParam::LineMargin * 2));
 
 		// 他の描画中の辺と交わらないようにする
 		for (auto&& drawnEdge : m_drawnEdges)
@@ -269,8 +269,8 @@ namespace QuickSpace::Play
 			// 同じ向きのやつとも重ならないようにするためちょっとだけ間隔を開けておく
 			// share_ptrここで使うの重いから別の方法がいいかも...
 			auto drawnEdgeExtended = SepEdge(
-				std::make_shared<Point>(*drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
-				std::make_shared<Point>(*drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
+				drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1),
+				drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1));
 			if (drawnEdgeExtended.IsIntersectWith(*cursorExtendedEdge) == false) continue;
 
 			// 交わったのでキャンセル
@@ -279,11 +279,11 @@ namespace QuickSpace::Play
 		return true;
 	}
 
-	float getNeighborDelta(const TerrEdgeNeighbor neighbor, Point cursor, bool isHorizontal)
+	int getNeighborDelta(const TerrEdgeNeighbor neighbor, Point cursor, bool isHorizontal)
 	{
 		return isHorizontal
-			? neighbor.OverlappedVertex->x - cursor.x
-			: neighbor.OverlappedVertex->y - cursor.y;
+			? neighbor.OverlappedVertex.x - cursor.x
+			: neighbor.OverlappedVertex.y - cursor.y;
 	}
 
 	bool Player::checkStartDrawing(EAngle angle)
@@ -322,7 +322,7 @@ namespace QuickSpace::Play
 			// 点を通過してしまったときはその点に強制的に戻す
 			const float newNeighborDelta = getNeighborDelta(neighbor, roundEdgeCursor(), isHorizontal);
 			if (Math::Sign(newNeighborDelta) != Math::Sign(neighborDelta))
-				m_edgeCursor = neighbor.OverlappedVertex->xy();
+				m_edgeCursor = neighbor.OverlappedVertex.xy();
 		}
 		else if (auto&& neighborRef = neighbor.NeighborRef.lock())
 		{
@@ -345,12 +345,12 @@ namespace QuickSpace::Play
 		}
 	}
 
-	void Player::continueDrawing(EAngle angle, const TerrVertexRef& oldEnd)
+	void Player::continueDrawing(EAngle angle, const TerrVertex& oldEnd)
 	{
-		auto nearPoint = roundEdgeCursor() + Angle(angle).ToPoint();
+		const auto nearPoint = roundEdgeCursor() + Angle(angle).ToPoint();
 		const auto newEdge = std::make_shared<TerrEdge>(
 			oldEnd,
-			std::make_shared<Point>(nearPoint.x, nearPoint.y));
+			Point(nearPoint.x, nearPoint.y));
 		TerrEdge::ConnectEdges(newEdge, m_edgeTarget);
 		newEdge->SetFixed(false);
 		PlayManager::Instance().Territory().Edges().push_back(newEdge);
@@ -361,7 +361,7 @@ namespace QuickSpace::Play
 	{
 		m_state = EPlayerState::Drawing;
 		m_drawnEdges.clear();
-		continueDrawing(angle, std::make_shared<Point>(roundEdgeCursor()));
+		continueDrawing(angle, roundEdgeCursor());
 	}
 
 

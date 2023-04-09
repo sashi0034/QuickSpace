@@ -40,7 +40,7 @@ namespace QuickSpace::Play
 		bool canRotateDrawingDirection(EAngle angle);
 		bool checkStartDrawing(EAngle angle);
 		void startDrawing(EAngle angle);
-		void continueDrawing(EAngle angle, const TerrVertexRef& oldEnd);
+		void continueDrawing(EAngle angle, const TerrVertex& oldEnd);
 		void rotateDrawingDirection(EAngle angle);
 		void checkFinishDrawing();
 		void finishDrawing(Point intersectedPoint);

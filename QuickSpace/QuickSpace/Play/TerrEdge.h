@@ -4,7 +4,7 @@
 
 namespace QuickSpace::Play
 {
-	using TerrVertexRef = std::shared_ptr<Point>;
+	using TerrVertex = Point;
 
 	class TerrEdge;
 	using TerrEdgeRef = std::shared_ptr<TerrEdge>;
@@ -12,25 +12,26 @@ namespace QuickSpace::Play
 	struct TerrEdgeNeighbor
 	{
 		std::weak_ptr<TerrEdge> NeighborRef;
-		TerrVertexRef OverlappedVertex;
+		TerrVertex OverlappedVertex;
 	};
 
 	class TerrEdge
 	{
 	public:
 		TerrEdge();
-		TerrEdge(const TerrVertexRef& startPos, const TerrVertexRef& endPos);
+		TerrEdge(const TerrVertex& startPos, const TerrVertex& endPos);
 		[[nodiscard]] Vec2 Midpoint(float rate) const;
-		[[nodiscard]] TerrVertexRef GetStart() const;
-		[[nodiscard]] TerrVertexRef GetEnd() const;
+		[[nodiscard]] TerrVertex GetStart() const;
+		[[nodiscard]] TerrVertex GetEnd() const;
 		[[nodiscard]] int GetLength() const;
 		void SetFixed(bool flag);
 		bool IsFixed() const;
+		void ChangeEnd(const TerrVertex& point);
 
-		bool HasVertex(const TerrVertexRef& vertex) const;
+		bool HasVertex(const TerrVertex& vertex) const;
 		EAngle Direction() const;
-		Optional<EAngle> GetDirectionFrom(const TerrVertexRef& oneSideVertex) const;
-		bool IsOverlappedVertex(const TerrVertexRef& vertex) const;
+		Optional<EAngle> GetDirectionFrom(const TerrVertex& oneSideVertex) const;
+		bool IsOverlappedVertex(const TerrVertex& vertex) const;
 		void MoveOnEdge(Float2* cursor, EAngle direction, float speed) const;
 		void MoveOnEdgeByRate(float* movingRate, EAngle direction, float speed);
 		bool IsHorizontal() const;
@@ -39,11 +40,11 @@ namespace QuickSpace::Play
 		const Optional<TerrEdgeNeighbor> GetNearestNeighbor(const Float2& point, EAngle targetDirection) const;
 		static void ConnectEdges(const TerrEdgeRef& neighbor1, const TerrEdgeRef& neighbor2);
 
-		static EAngle CalcDirectionBetween(const TerrVertexRef& startPos, const TerrVertexRef& endPos);
-		static bool IsOverlappedVertexBetween(const TerrVertexRef& startPos, const TerrVertexRef& endPos, const Point& checking);
+		static EAngle CalcDirectionBetween(const TerrVertex& startPos, const TerrVertex& endPos);
+		static bool IsOverlappedVertexBetween(const TerrVertex& startPos, const TerrVertex& endPos, const Point& checking);
 	private:
-		TerrVertexRef m_startPos{};
-		TerrVertexRef m_endPos{};
+		TerrVertex m_startPos{};
+		TerrVertex m_endPos{};
 		EAngle m_direction{};
 		Array<TerrEdgeNeighbor> m_neighbors{};
 		// プレイヤーが引っ張っているときオフ

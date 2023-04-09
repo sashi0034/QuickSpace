@@ -14,10 +14,10 @@ namespace QuickSpace::Play
 
 		constexpr int lineHalf = 480;
 
-		const auto v00 = std::make_shared<Point>(center + Point(-lineHalf, -lineHalf));
-		const auto v01 = std::make_shared<Point>(center + Point{-lineHalf, lineHalf});;
-		const auto v10 = std::make_shared<Point>(center + Point{lineHalf, -lineHalf});;
-		const auto v11 = std::make_shared<Point>(center + Point{lineHalf, lineHalf});;
+		const auto v00 = Point(center + Point(-lineHalf, -lineHalf));
+		const auto v01 = Point(center + Point{-lineHalf, lineHalf});;
+		const auto v10 = Point(center + Point{lineHalf, -lineHalf});;
+		const auto v11 = Point(center + Point{lineHalf, lineHalf});;
 
 		const auto e1 = std::make_shared<TerrEdge>(v00, v01);
 		const auto e2 = std::make_shared<TerrEdge>(v01, v11);
@@ -46,20 +46,20 @@ namespace QuickSpace::Play
 		for (auto&& edge : m_edgeList)
 		{
 			// 影
-			Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth + 2, Color{32, 32,48});
+			Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth + 2, Color{240, 122, 255});
 		}
 		for (auto&& edge : m_edgeList)
 		{
 			auto color = Color{160, 64, 196};
 			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge) color.b = 0;
-			(void)Line{*edge->GetStart(), *edge->GetEnd()}.draw(lineWidth, color);
+			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
 		}
 
 		auto&& font = GameAsset::Instance().font16;
 		for (auto&& edge : m_edgeList)
 		{
-			font(*edge->GetStart()).drawAt(*edge->GetStart() + Point::Up(12));
-			font(*edge->GetEnd()).drawAt(*edge->GetEnd() + Point::Up(12));
+			font(edge->GetStart()).drawAt(edge->GetStart() + Point::Up(12));
+			font(edge->GetEnd()).drawAt(edge->GetEnd() + Point::Up(12));
 		}
 
 		ActorBase::Update();

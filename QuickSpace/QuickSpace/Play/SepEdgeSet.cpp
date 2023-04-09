@@ -9,12 +9,12 @@ namespace QuickSpace::Play
 		m_edges(edges)
 	{}
 
-	void SepEdgeSet::TryDivideEdge(const TerrVertexRef& vertex)
+	void SepEdgeSet::TryDivideEdge(const TerrVertex& vertex)
 	{
 		for (auto&& edge : m_edges)
 		{
 			// 既存の辺の端点のどこかと重なっているなら分割中止
-			if (*edge.GetStart() == *vertex || *edge.GetEnd() == *vertex) return;
+			if (edge.GetStart() == vertex || edge.GetEnd() == vertex) return;
 		}
 
 		int overlappedIndex = -1;
@@ -46,8 +46,8 @@ namespace QuickSpace::Play
 		for (int i=0; i<m_edges.size(); ++i)
 		{
 			auto&& edge = m_edges[i];
-			if (*edge.GetStart() != startPoint &&
-				*edge.GetEnd() != startPoint) continue;
+			if (edge.GetStart() != startPoint &&
+				edge.GetEnd() != startPoint) continue;
 
 			checkedFlags[i] = true;
 			if (startEdgeId1 == -1) startEdgeId1 = i;
@@ -88,17 +88,17 @@ namespace QuickSpace::Play
 		checkedFlags[0] = true;
 
 		// 先頭の辺の始点を終端としてつないでいく
-		followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetStart(), false);
+		followAndConnectEdges(&sortedSet, &checkedFlags, m_edges[0].GetStart(), false);
 		// すぐに始点を含む辺とつながったらサイズ2で終了してしまうので、終点を終端とする
 		if (m_edges.size() != sortedSet.m_edges.size())
-			followAndConnectEdges(&sortedSet, &checkedFlags, *m_edges[0].GetEnd(), false);
+			followAndConnectEdges(&sortedSet, &checkedFlags, m_edges[0].GetEnd(), false);
 
 		// 各辺の始点と終点がつながるように
 		for (int i1=0; i1 <= sortedSet.m_edges.size() - 1; ++i1)
 		{
 			int i2 = (i1 + 1) % sortedSet.m_edges.size();
-			if (*sortedSet.m_edges[i1].GetStart() == *sortedSet.m_edges[i2].GetStart() ||
-				*sortedSet.m_edges[i1].GetStart() == *sortedSet.m_edges[i2].GetEnd())
+			if (sortedSet.m_edges[i1].GetStart() == sortedSet.m_edges[i2].GetStart() ||
+				sortedSet.m_edges[i1].GetStart() == sortedSet.m_edges[i2].GetEnd())
 				sortedSet.m_edges[i1].SwapStartAndEnd();
 		}
 
@@ -110,7 +110,7 @@ namespace QuickSpace::Play
 		}
 
 		const auto polygonPoints =
-			sortedSet.m_edges.map([](SepEdge edge){ return Vec2(edge.GetStart()->xy()); });
+			sortedSet.m_edges.map([](SepEdge edge){ return Vec2(edge.GetStart().xy()); });
 
 		return Polygon(polygonPoints);
 	}

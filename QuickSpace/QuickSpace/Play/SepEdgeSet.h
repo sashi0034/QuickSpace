@@ -11,7 +11,7 @@ namespace QuickSpace::Play
 	public:
 		SepEdgeSet() = default;
 		explicit SepEdgeSet(const Array<SepEdge>& edges);
-		void TryDivideEdge(const TerrVertexRef& vertex);
+		void TryDivideEdge(const TerrVertex& vertex);
 
 		// 純粋な閉路から経路探索
 		SepEdgeSetTwoRoot CalcRouteAsPureCircuit(const Point& startPoint, const Point& endPoint);
