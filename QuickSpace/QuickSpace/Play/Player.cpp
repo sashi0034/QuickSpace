@@ -170,6 +170,9 @@ namespace QuickSpace::Play
 
 		for (auto&& edge : PlayManager::Instance().Territory().Edges())
 		{
+			// 固定
+			edge->SetFixed(true);
+
 			if (m_edgeTarget->IsHorizontal() == edge->IsHorizontal()) continue;
 			if (edge->IsOverlappedVertex(m_edgeTarget->GetEnd()) == false) continue;
 

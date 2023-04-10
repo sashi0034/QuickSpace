@@ -85,12 +85,24 @@ namespace QuickSpace::Play
 			Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth + 2, Color{240, 122, 255});
 		}
 
-		Graphics2D::SetPSConstantBuffer(1, m_animCb);
+		// プレイヤーが書き込んでいる最中の辺
+		for (auto&& edge : m_edgeList)
+		{
+			if (edge->IsFixed()) continue;
+			const float brightness = 1 + (1 - Math::Abs(animAmp)) * 0.3f;
+			auto color = ColorF{ 47 / 255.0f, 101 / 255.0f, 221 / 255.0f } * brightness;
+			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge)
+				color *= 1.3f;
+			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
+		}
 
+		// 固定された辺はカスタムシェーダで描画
+		Graphics2D::SetPSConstantBuffer(1, m_animCb);
 		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyLine };
 
 		for (auto&& edge : m_edgeList)
 		{
+			if (edge->IsFixed() == false) continue;
 			const float brightness = 1 - (1 - Math::Abs(animAmp)) * 0.1f;
 			auto color = ColorF{144 / 240.0f, 64 / 255.0f, 176 / 255.0f} * brightness;
 			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge)
