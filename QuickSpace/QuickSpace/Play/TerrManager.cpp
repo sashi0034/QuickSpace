@@ -87,15 +87,14 @@ namespace QuickSpace::Play
 
 		Graphics2D::SetPSConstantBuffer(1, m_animCb);
 
-		Graphics2D::SetPSTexture(1, GameAsset::Instance().tex_water_bubbles);
-
 		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyLine };
 
 		for (auto&& edge : m_edgeList)
 		{
 			const float brightness = 1 - (1 - Math::Abs(animAmp)) * 0.1f;
 			auto color = ColorF{144 / 240.0f, 64 / 255.0f, 176 / 255.0f} * brightness;
-			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge) color.b = 1.0f;
+			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge)
+				color.b = 1.0f;
 			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
 		}
 	}

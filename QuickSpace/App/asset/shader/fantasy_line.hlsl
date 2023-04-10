@@ -2,8 +2,6 @@
 //
 //	Textures
 //
-// Texture2D		g_texture0 : register(t0);
-Texture2D		g_texture1 : register(t1);
 SamplerState	g_sampler0 : register(s0);
 SamplerState	g_sampler1 : register(s1);
 SamplerState	g_sampler2 : register(s2);
@@ -38,38 +36,25 @@ cbuffer AnimCb : register(b1)
 	float g_animRate;
 }
 
-float2 calcUvTex1(s3d::PSInput input)
-{
-	const float2 vecOne = {1.0f, 1.0f};
-	const float uvStep = 96.0;
-
-	const float scrollSpeed = 2.0;
-	float2 uv = ((input.position.xy % uvStep) / uvStep) + ((scrollSpeed * g_animRate) % 1.0) * vecOne;
-
-	const float waveStep = 2.0;
-	const float waveY = sin(input.position.y / 180.0 * PI * waveStep);
-	const float waveSpeed = 1.5;
-	const float waveMax = 0.5;
-	const float waveAmount = waveMax * sin(g_animRate * PI * waveSpeed);
-	uv.x = uv.x + waveAmount * waveY;
-	
-	uv = (uv + vecOne) % 1.0;
-	return uv;
-}
-
 float4 PS(s3d::PSInput input) : SV_TARGET
 {
 	float4 color0 = input.color;
 
-	const float2 uv1 = calcUvTex1(input);
+	float snappedStep = 144.0;
+	const float scrollSpeed = 2.0;
+	const float2 vecOne = {1.0f, 1.0f};
+	float2 snappedOffset = ((scrollSpeed * g_animRate) % 1.0) * vecOne * snappedStep;
+	float2 snappedPos = floor((input.position.xy + snappedOffset) / snappedStep) * snappedStep - snappedOffset;
+	float snappedManhattanDelta = input.position.x + input.position.y - snappedPos.x - snappedPos.y;
 
-	float4 color1 = g_texture1.Sample(g_sampler1, uv1);
-	float rate = (color1.x + color1.y + color1.z) / 3;
+	// float rate = (snappedStep * 2 - snappedManhattanDelta) / (snappedStep * 2);
+	// color0.x += (1.0f - color0.x) * rate;
+	// color0.y += (1.0f - color0.y) * rate;
+	// color0.z += (1.0f - color0.z) * rate;
 
-	color0 *= 1 + rate;
-	// color0.rgb = (color0.rgb * 1.0 + color1.rgb * 1.0);
-
-	// TODO: テクスチャ使わずに(-step, -step)にループUV動かす感じで直接発効させた方がいいかも
+	const float brightnessIntensity = sqrt(PI);
+	float rate = 1 + brightnessIntensity * (snappedStep * 2 - snappedManhattanDelta) / (snappedStep * 2);
+	color0 *= rate;
 	
 	return (color0 * input.color) + g_colorAdd;
 }
