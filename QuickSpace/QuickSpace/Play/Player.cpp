@@ -6,10 +6,7 @@
 #include "SepEdgeSet.h"
 #include "TerrManager.h"
 #include "QuickSpace/ConstParam.h"
-#include "QuickSpace/GameAsset.h"
 #include "QuickSpace/GameInput.h"
-#include "QuickSpace/GameRoot.h"
-#include "QuickSpace/Util/Utils.h"
 
 namespace QuickSpace::Play
 {
@@ -333,14 +330,9 @@ namespace QuickSpace::Play
 		return m_edgeCursor;
 	}
 
-	bool Player::IsMovedCursorNow() const
+	bool Player::IsMovingCursorNow() const
 	{
 		return m_edgeCursor != m_edgeCursorBefore;
-	}
-
-	float Player::AnimValue() const
-	{
-		return m_animValue;
 	}
 
 	Angle Player::GetAngle() const

@@ -1,7 +1,11 @@
 ﻿#pragma once
 #include "Player.h"
 
-namespace QuickSpace::Play::PlayerAction
+namespace QuickSpace::Play
 {
-	void DrawPlayer(const Player& self);
+	class Player::PlayerAction
+	{
+	public:
+		static void DrawPlayer(const Player& self);
+	};
 }

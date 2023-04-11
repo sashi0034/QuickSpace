@@ -21,10 +21,11 @@ namespace QuickSpace::Play
 		TerrEdgeRef& GetEdgeTarget();
 
 		Float2 EdgeCursor() const;
-		bool IsMovedCursorNow() const;
-		float AnimValue() const;
+		bool IsMovingCursorNow() const;
 		Angle GetAngle() const;
 	private:
+		class PlayerAction;
+
 		EPlayerState m_state = EPlayerState::Moving;
 		TerrEdgeRef m_edgeTarget{}; // 接触中の辺
 		Float2 m_edgeCursor{}; // プレイヤーのカーソル

@@ -5,20 +5,19 @@
 #include "QuickSpace/GameAsset.h"
 #include "QuickSpace/Util/Utils.h"
 
-namespace QuickSpace::Play::PlayerAction
-{
-	void DrawPlayer(const Player& self)
+namespace QuickSpace::Play{
+	void Player::PlayerAction::DrawPlayer(const Player& self)
 	{
 		const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
 
 		const auto position = self.EdgeCursor();
 		constexpr int cellSize = 32;
 		constexpr int frameDuration = 250;
-		const bool isWalking = self.IsMovedCursorNow();
+		const bool isWalking = self.IsMovingCursorNow();
 
 		Point cellPos{};
 		bool isMirrored = false;
-		const float animValue = self.AnimValue();
+		const float animValue = self.m_animValue;
 		switch (self.GetAngle().Value())
 		{
 		case EAngle::Up:
@@ -51,6 +50,5 @@ namespace QuickSpace::Play::PlayerAction
 		(void)image
 			.scaled(ConstParam::PixelartScale)
 			.drawAt(position - Vec2{0, ConstParam::PixelartScale * cellSize / 2});
-
 	}
 }
