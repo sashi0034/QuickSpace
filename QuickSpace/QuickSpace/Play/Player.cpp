@@ -162,18 +162,61 @@ namespace QuickSpace::Play
 		{
 			if (drawnEdge.GetEnd() == m_edgeTarget->GetStart()) continue;
 			// 同じ向きのやつとも重ならないようにするためちょっとだけ間隔を開けておく
-			auto drawnEdgeExtended = SepEdge(
-				Point(drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
-				Point(drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
+			auto&& drawnEdgeExtended = SepEdge(drawnEdge).ExtendBothTips(ConstParam::LineMargin - 1);
 			if (drawnEdgeExtended.IsIntersectWith(SepEdge(cursorExtendedEdge)) == false) continue;
 
-			auto intersectedPoint = drawnEdgeExtended.CalcIntersected(SepEdge(m_edgeTarget));
+			auto intersectedPoint = drawnEdgeExtended.CalcIntersected(cursorExtendedEdge);
 			// 交わったので修正
 			cursorExtendedEdge.ChangeEnd(intersectedPoint);
 			m_edgeCursor = intersectedPoint - Angle(direction).ToPoint() * ConstParam::LineMargin;
 			m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
 		}
+
+		checkStickDrawingEdgeToFrontier(direction, cursorExtendedEdge);
 	}
+
+	void Player::checkStickDrawingEdgeToFrontier(const EAngle direction, SepEdge cursorExtendedEdge)
+	{
+		for (auto&& frontierEdge : PlayManager::Instance().Territory().Frontier().Edges())
+		{
+			if (frontierEdge.IsIntersectWith(cursorExtendedEdge) == false) continue;
+			const auto intersectedPoint = frontierEdge.CalcIntersected(cursorExtendedEdge);
+			if (intersectedPoint == m_edgeTarget->GetStart()) continue;
+
+			// フロンティアが近くにあったら自動的に吸着
+			cursorExtendedEdge.ChangeEnd(intersectedPoint);
+			m_edgeCursor = intersectedPoint;
+			m_edgeTarget->ChangeEnd(intersectedPoint);
+
+			// 終了
+			return;
+		}
+
+		// for (auto&& frontierEdge : PlayManager::Instance().Territory().Frontier().Edges())
+		// {
+		// 	auto&& frontierEdgeExtended = SepEdge(frontierEdge).ExtendBothTips(ConstParam::LineMargin - 1);
+		//
+		// 	if (frontierEdgeExtended.IsIntersectWith(cursorExtendedEdge) == false) continue;
+		// 	auto intersectedPoint = frontierEdgeExtended.CalcIntersected(cursorExtendedEdge);
+		// 	if (intersectedPoint == m_edgeTarget->GetStart()) continue;
+		//
+		// 	// 間接的にフロンティアが近くにあったら向きを回転して自動的に吸着
+		// 	// ここでは、上にあるコードにより線分本体にはあたらず、延長部分に当たるはず
+		// 	cursorExtendedEdge.ChangeEnd(intersectedPoint);
+		// 	m_edgeCursor = intersectedPoint;
+		// 	m_edgeTarget->ChangeEnd(intersectedPoint);
+		//
+		// 	m_drawnEdges.push_back(SepEdge(m_edgeTarget));
+		// 	continueDrawing(direction, m_edgeTarget->GetEnd()); // 結局終点を次行に変更するので、このdirectionは任意でよい
+		//
+		// 	m_edgeCursor =
+		// 		(frontierEdge.GetStart() - intersectedPoint).manhattanLength() < (frontierEdge.GetEnd() - intersectedPoint).manhattanLength()
+		// 		? frontierEdge.GetStart()
+		// 		: frontierEdge.GetEnd();
+		// 	m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
+		// }
+	}
+
 
 	void Player::moveWithDraw()
 	{

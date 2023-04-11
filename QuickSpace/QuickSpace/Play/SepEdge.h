@@ -22,6 +22,7 @@ namespace QuickSpace::Play
 		Angle GetDirection() const;
 		void SwapStartAndEnd();
 		bool IsHorizontal() const;
+		SepEdge& ExtendBothTips(int length);
 	private:
 
 		TerrVertex m_start{};

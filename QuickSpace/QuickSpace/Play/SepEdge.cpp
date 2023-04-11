@@ -95,4 +95,12 @@ namespace QuickSpace:: Play
 	{
 		return m_start.y == m_end.y;
 	}
+
+	SepEdge& SepEdge::ExtendBothTips(int length)
+	{
+		const auto vec =  GetDirection().ToPoint() * length;
+		m_start -= vec;
+		m_end += vec;
+		return *this;
+	}
 }

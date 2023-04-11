@@ -49,6 +49,7 @@ namespace QuickSpace::Play
 		void checkFinishDrawing();
 		void finishDrawing(Point intersectedPoint);
 		void extendDrawingEdge(EAngle direction);
+		void checkStickDrawingEdgeToFrontier(const EAngle direction, SepEdge cursorExtendedEdge);
 		void checkMoveIntersect(EAngle angle, float speed, bool isHorizontal);
 		static InputGroup& inputAngle(EAngle angle);
 	};
