@@ -47,8 +47,8 @@ namespace QuickSpace::Play
 		stepGuiPos();
 		SimpleGUI::Headline(
 		U"Territory Areas: {}"_fmt(territory.OccupiedAreas().size()), getGuiPos());
-		SimpleGUI::CheckBox(m_isTraceFrontierOutline, U"Trace Frontier", getGuiPos() + headlineOffset());
-		if (m_isTraceFrontierOutline) traceFrontierOutline(territory);
+		// SimpleGUI::CheckBox(m_isTraceFrontierOutline, U"Trace Frontier", getGuiPos() + headlineOffset());
+		// if (m_isTraceFrontierOutline) traceFrontierOutline(territory);
 
 		// プレイヤー速度
 		stepGuiPos();
@@ -83,17 +83,6 @@ namespace QuickSpace::Play
 			player.ForceMoveEdgeCursor(player.EdgeCursor() + Float2{0, 1});
 		}
 
-	}
-
-	void PlayDebugger::traceFrontierOutline(TerrManager& territory)
-	{
-		for (auto&& edge : territory.Frontier().Edges())
-		{
-			constexpr int thickness = 5;
-			(void)Line(edge.GetStart(), edge.GetEnd()).draw(thickness, Color{255, 255, 0, 100});
-			Circle(edge.GetStart(), thickness).draw(Color{255, 255, 0, 100});
-			Circle(edge.GetEnd(), thickness).draw(Color{255, 255, 0, 100});
-		}
 	}
 
 	float PlayDebugger::OrderPriority()

@@ -8,6 +8,15 @@
 
 namespace QuickSpace::Play
 {
+	TerrManagerState TerrManagerState::CopyDeeply() const
+	{
+		auto clone = TerrManagerState{
+			FrontierFace,
+			OccupiedAreas,
+			TerrEdge::CopyTerrEdgesDeeply(EdgeList)};
+		return clone;
+	}
+
 	void TerrManager::Init()
 	{
 		const auto center = Scene::Center();
@@ -74,6 +83,23 @@ namespace QuickSpace::Play
 		}
 	}
 
+	void TerrManager::drawLinesIntoFantasy(const float animAmp, const int lineWidth)
+	{
+		// 固定された辺はカスタムシェーダで描画
+		Graphics2D::SetPSConstantBuffer(1, m_animCb);
+		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyLine };
+
+		for (auto&& edge : m_state.EdgeList)
+		{
+			if (edge->IsFixed() == false) continue;
+			const float brightness = 1 - (1 - Math::Abs(animAmp)) * 0.1f;
+			auto color = ColorF{144 / 240.0f, 64 / 255.0f, 176 / 255.0f} * brightness;
+			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge)
+				color.b = 1.0f;
+			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
+		}
+	}
+
 	void TerrManager::drawTerritoryLines()
 	{
 		const float animAmp = Math::Sin(m_animCb->animRate * Math::Pi * 2.5f);
@@ -96,18 +122,16 @@ namespace QuickSpace::Play
 			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
 		}
 
-		// 固定された辺はカスタムシェーダで描画
-		Graphics2D::SetPSConstantBuffer(1, m_animCb);
-		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyLine };
+		drawLinesIntoFantasy(animAmp, lineWidth);
 
-		for (auto&& edge : m_state.EdgeList)
+		// フロンティアを目立たせる
+		for (auto&& edge : m_state.FrontierFace.Edges())
 		{
-			if (edge->IsFixed() == false) continue;
-			const float brightness = 1 - (1 - Math::Abs(animAmp)) * 0.1f;
-			auto color = ColorF{144 / 240.0f, 64 / 255.0f, 176 / 255.0f} * brightness;
-			if (PlayManager::Instance().GetPlayer().GetEdgeTarget() == edge)
-				color.b = 1.0f;
-			(void)Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth, color);
+			constexpr int thickness = 5;
+			constexpr auto color = Color{255, 255, 0, 100};
+			(void)Line(edge.GetStart(), edge.GetEnd()).draw(thickness, color);
+			(void)Circle(edge.GetStart(), thickness).draw(color);
+			(void)Circle(edge.GetEnd(), thickness).draw(color);
 		}
 	}
 
@@ -138,12 +162,11 @@ namespace QuickSpace::Play
 
 	TerrManagerState TerrManager::CopyState() const
 	{
-		// TODO: TerrEdgeにweak_ptr入ってるせいでちゃんとコピーできてないので修正　　
-		return m_state;
+		return m_state.CopyDeeply();
 	}
 
 	void TerrManager::PasteState(const TerrManagerState& state)
 	{
-		m_state = state;
+		m_state = state.CopyDeeply();
 	}
 }

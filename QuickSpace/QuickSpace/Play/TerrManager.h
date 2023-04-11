@@ -11,6 +11,7 @@ namespace QuickSpace::Play
 		SepFace FrontierFace{};
 		Array<Polygon> OccupiedAreas{};
 		Array<TerrEdgeRef> EdgeList{};
+		TerrManagerState CopyDeeply() const;
 	};
 
 	class TerrManager : public ActorBase
@@ -33,6 +34,7 @@ namespace QuickSpace::Play
 		ConstantBuffer<AnimCb> m_animCb{};
 
 		void drawOccupiedAreas();
+		void drawLinesIntoFantasy(float animAmp, int lineWidth);
 		void drawTerritoryLines();
 
 		TerrManagerState m_state{};

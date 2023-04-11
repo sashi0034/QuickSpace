@@ -19,6 +19,7 @@ namespace QuickSpace::Play
 	{
 	public:
 		TerrEdge();
+		TerrEdge(const TerrEdge& origin);
 		TerrEdge(const TerrVertex& startPos, const TerrVertex& endPos);
 		[[nodiscard]] Vec2 Midpoint(float rate) const;
 		[[nodiscard]] TerrVertex GetStart() const;
@@ -42,6 +43,8 @@ namespace QuickSpace::Play
 
 		static EAngle CalcDirectionBetween(const TerrVertex& startPos, const TerrVertex& endPos);
 		static bool IsOverlappedVertexBetween(const TerrVertex& startPos, const TerrVertex& endPos, const Point& checking);
+
+		static Array<TerrEdgeRef> CopyTerrEdgesDeeply(const Array<TerrEdgeRef>& sourceArray);
 	private:
 		TerrVertex m_startPos{};
 		TerrVertex m_endPos{};

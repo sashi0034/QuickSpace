@@ -7,6 +7,10 @@ namespace QuickSpace::Play
 {
 	TerrEdge::TerrEdge() = default;
 
+	TerrEdge::TerrEdge(const TerrEdge& origin) :
+		TerrEdge(origin.GetStart(), origin.GetEnd())
+	{}
+
 	TerrEdge::TerrEdge(const TerrVertex& startPos, const TerrVertex& endPos) :
 		m_startPos(startPos),
 		m_endPos(endPos),
@@ -191,6 +195,36 @@ namespace QuickSpace::Play
 		return isHorizontal
 			? startPos.y == checking.y && Util::RangeInt::FromSort(startPos.x, endPos.x).IsBetween(checking.x)
 			: startPos.x == checking.x && Util::RangeInt::FromSort(startPos.y, endPos.y).IsBetween(checking.y);
+	}
+
+	Array<TerrEdgeRef> TerrEdge::CopyTerrEdgesDeeply(const Array<TerrEdgeRef>& sourceArray)
+	{
+		HashTable<TerrEdgeRef, int32> sourceIndexTable{};
+		for (int i=0; i<sourceArray.size(); ++i)
+		{
+			sourceIndexTable.emplace(sourceArray[i], i);
+		}
+
+		Array<TerrEdgeRef> result{};
+		for (auto&& edge : sourceArray)
+		{
+			result.push_back(std::make_shared<TerrEdge>(*edge));
+		}
+
+		for (int index = 0; index < sourceArray.size(); ++index)
+		{
+			auto&& sourceEdge = sourceArray[index];
+			result[index]->SetFixed(sourceEdge->IsFixed());
+
+			for (auto&& sourceEdgeNeighbor : sourceEdge->Neighbors())
+			{
+				auto sourceEdgeNeighborRef = sourceEdgeNeighbor.NeighborRef.lock();
+				if (sourceEdgeNeighborRef == nullptr) continue;
+				int neighborIndex = sourceIndexTable[sourceEdgeNeighborRef];
+				if (index < neighborIndex) ConnectEdges(result[index], result[neighborIndex]);
+			}
+		}
+		return result;
 	}
 
 	void TerrEdge::addNeighbor(const TerrEdgeRef& other)

@@ -15,11 +15,9 @@ namespace QuickSpace::Play
 		Vec2 getGuiPos();
 		void undoTerrHistory();
 		void redoTerrHistory();
-		void traceFrontierOutline(TerrManager& territory);
 
 		int m_guiPosIndex{};
 		Array<TerrManagerState> m_terrHistory{};
 		int m_terrHistoryIndex = 0;
-		bool m_isTraceFrontierOutline = true;
 	};
 }
