@@ -208,6 +208,7 @@
     <ClCompile Include="QuickSpace\Play\Angle.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayBg.cpp" />
     <ClCompile Include="QuickSpace\Play\Player.cpp" />
+    <ClCompile Include="QuickSpace\Play\PlayerAction.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayManager.cpp" />
     <ClCompile Include="QuickSpace\Play\SepEdge.cpp" />
     <ClCompile Include="QuickSpace\Play\SepEdgeSet.cpp" />
@@ -581,6 +582,7 @@
     <ClInclude Include="QuickSpace\Play\Angle.h" />
     <ClInclude Include="QuickSpace\Play\PlayBg.h" />
     <ClInclude Include="QuickSpace\Play\Player.h" />
+    <ClInclude Include="QuickSpace\Play\PlayerAction.h" />
     <ClInclude Include="QuickSpace\Play\PlayManager.h" />
     <ClInclude Include="QuickSpace\Play\SepEdge.h" />
     <ClInclude Include="QuickSpace\Play\SepEdgeSet.h" />

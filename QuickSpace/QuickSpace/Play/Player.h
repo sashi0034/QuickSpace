@@ -19,6 +19,11 @@ namespace QuickSpace::Play
 		void Update() override;
 		float OrderPriority() override;
 		TerrEdgeRef& GetEdgeTarget();
+
+		Float2 EdgeCursor() const;
+		bool IsMovedCursorNow() const;
+		float AnimValue() const;
+		Angle GetAngle() const;
 	private:
 		EPlayerState m_state = EPlayerState::Moving;
 		TerrEdgeRef m_edgeTarget{}; // 接触中の辺
@@ -32,8 +37,6 @@ namespace QuickSpace::Play
 
 		float m_animValue{};
 
-		void drawPlayer() const;
-
 		void moveOnEdge();
 		void changeEdgeTargetAutoAfterMoved();
 		void moveWithDraw();
@@ -44,7 +47,6 @@ namespace QuickSpace::Play
 		void rotateDrawingDirection(EAngle angle);
 		void checkFinishDrawing();
 		void finishDrawing(Point intersectedPoint);
-		void confirmDrawingEdge();
 		void extendDrawingEdge(EAngle direction);
 		void checkMoveIntersect(EAngle angle, float speed, bool isHorizontal);
 		static InputGroup& inputAngle(EAngle angle);

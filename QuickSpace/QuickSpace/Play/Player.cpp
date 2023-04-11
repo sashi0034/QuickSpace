@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Player.h"
 
+#include "PlayerAction.h"
 #include "PlayManager.h"
 #include "SepEdgeSet.h"
 #include "TerrManager.h"
@@ -12,8 +13,7 @@
 
 namespace QuickSpace::Play
 {
-	Player::Player()
-	{}
+	Player::Player() = default;
 
 	void Player::Init()
 	{
@@ -41,56 +41,10 @@ namespace QuickSpace::Play
 		}
 
 		if (m_edgeCursor != m_edgeCursorBefore) m_angle = Angle::ConvertFrom(m_edgeCursor - m_edgeCursorBefore);
-		drawPlayer();
+		PlayerAction::DrawPlayer(*this);
 
 		ActorBase::Update();
 	}
-
-	void Player::drawPlayer() const
-	{
-		const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
-
-		const auto position = m_edgeCursor;
-		constexpr int cellSize = 32;
-		constexpr int frameDuration = 250;
-		const bool isWalking = m_edgeCursorBefore != m_edgeCursor;
-
-		Point cellPos{};
-		bool isMirrored = false;
-		switch (m_angle.Value())
-		{
-		case EAngle::Up:
-			cellPos = isWalking
-				? Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 5}
-				: Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 2};
-			break;
-		case EAngle::Right:
-			cellPos = isWalking
-				? Point{Util::AnimFrameIndexF(m_animValue, 5, frameDuration), 4}
-				: Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 1};
-			break;
-		case EAngle::Down:
-			cellPos = isWalking
-				? Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 3}
-				: Point{Util::AnimFrameIndexF(m_animValue, 5, frameDuration), 0};
-			break;
-		case EAngle::Left:
-			isMirrored = true;
-			cellPos = isWalking
-				? Point{Util::AnimFrameIndexF(m_animValue, 5, frameDuration), 4}
-				: Point{Util::AnimFrameIndexF(m_animValue, 4, frameDuration), 1};
-			break;
-		default: ;
-		}
-
-		auto&& image =
-			GameAsset::Instance().phine_32x32(cellPos.x * cellSize, cellPos.y * cellSize, cellSize, cellSize);
-		if (isMirrored) image = image.mirrored();
-		(void)image
-			.scaled(ConstParam::PixelartScale)
-			.drawAt(position - Vec2{0, ConstParam::PixelartScale * cellSize / 2});
-	}
-
 
 	Point Player::roundEdgeCursor() const
 	{
@@ -163,21 +117,23 @@ namespace QuickSpace::Play
 
 	void Player::finishDrawing(Point intersectedPoint)
 	{
-		confirmDrawingEdge();
 		m_edgeCursor = intersectedPoint;
 		m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
-		m_drawnEdges.back().ChangeEnd(m_edgeCursor.asPoint());
+		m_drawnEdges.push_back(SepEdge(m_edgeTarget));
 
 		for (auto&& edge : PlayManager::Instance().Territory().Edges())
 		{
 			// 固定
 			edge->SetFixed(true);
-
+		}
+		for (auto&& edge : PlayManager::Instance().Territory().Edges())
+		{
 			if (m_edgeTarget->IsHorizontal() == edge->IsHorizontal()) continue;
 			if (edge->IsOverlappedVertex(m_edgeTarget->GetEnd()) == false) continue;
 
 			// 頂点が重なっている辺を接続
 			TerrEdge::ConnectEdges(edge, m_edgeTarget);
+			break;
 		}
 
 		m_state = EPlayerState::Moving;
@@ -196,11 +152,6 @@ namespace QuickSpace::Play
 		m_drawnEdges.clear();
 	}
 
-	void Player::confirmDrawingEdge()
-	{
-		m_drawnEdges.push_back(SepEdge(m_edgeTarget));
-	}
-
 	void Player::extendDrawingEdge(const EAngle direction)
 	{
 		// 描画中に線を引き伸ばす
@@ -214,7 +165,6 @@ namespace QuickSpace::Play
 		{
 			if (drawnEdge.GetEnd() == m_edgeTarget->GetStart()) continue;
 			// 同じ向きのやつとも重ならないようにするためちょっとだけ間隔を開けておく
-			// share_ptrここで使うの重いから別の方法がいいかも...
 			auto drawnEdgeExtended = SepEdge(
 				Point(drawnEdge.GetStart() - drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)),
 				Point(drawnEdge.GetEnd() + drawnEdge.GetDirection().ToPoint() * (ConstParam::LineMargin - 1)));
@@ -253,7 +203,7 @@ namespace QuickSpace::Play
 	{
 		if (canRotateDrawingDirection(angle) == false) return;
 
-		confirmDrawingEdge();
+		m_drawnEdges.push_back(SepEdge(m_edgeTarget));
 		continueDrawing(angle, m_edgeTarget->GetEnd());
 	}
 
@@ -378,12 +328,23 @@ namespace QuickSpace::Play
 		return m_edgeTarget;
 	}
 
-	// Optional<EAngle> Player::getInputAngle() const
-	// {
-	// 	if (GameInput::Instance().Up().pressed()) return EAngle::Up;
-	// 	if (GameInput::Instance().Down().pressed()) return EAngle::Down;
-	//
-	// 	if (GameInput::Instance().Left().pressed()) return EAngle::Left;
-	// 	if (GameInput::Instance().Right().pressed()) return EAngle::Right;
-	// }
+	Float2 Player::EdgeCursor() const
+	{
+		return m_edgeCursor;
+	}
+
+	bool Player::IsMovedCursorNow() const
+	{
+		return m_edgeCursor != m_edgeCursorBefore;
+	}
+
+	float Player::AnimValue() const
+	{
+		return m_animValue;
+	}
+
+	Angle Player::GetAngle() const
+	{
+		return m_angle;
+	}
 }
