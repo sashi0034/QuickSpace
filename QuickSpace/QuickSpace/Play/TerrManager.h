@@ -6,6 +6,13 @@
 
 namespace QuickSpace::Play
 {
+	struct TerrManagerState
+	{
+		SepFace FrontierFace{};
+		Array<Polygon> OccupiedAreas{};
+		Array<TerrEdgeRef> EdgeList{};
+	};
+
 	class TerrManager : public ActorBase
 	{
 	public:
@@ -15,6 +22,9 @@ namespace QuickSpace::Play
 		SepFace& Frontier();
 		void ResetFrontier(const SepFace& frontier);
 		void AddOccupiedArea(SepEdgeSet edgeSet);
+		const Array<Polygon>& OccupiedAreas() const;
+		[[nodiscard]] TerrManagerState CopyState() const;
+		void PasteState(const TerrManagerState& state);
 	private:
 		struct AnimCb
 		{
@@ -25,8 +35,6 @@ namespace QuickSpace::Play
 		void drawOccupiedAreas();
 		void drawTerritoryLines();
 
-		SepFace m_frontierFace{};
-		Array<Polygon> m_occupiedAreas{};
-		Array<TerrEdgeRef> m_edgeList{};
+		TerrManagerState m_state{};
 	};
 }

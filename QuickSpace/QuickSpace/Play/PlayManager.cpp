@@ -3,6 +3,7 @@
 
 #include "PlayBg.h"
 #include "Player.h"
+#include "TerrDebugger.h"
 #include "TerrManager.h"
 #include "QuickSpace/ActorManager.h"
 #include "QuickSpace/GameRoot.h"
@@ -14,6 +15,9 @@ namespace QuickSpace::Play
 		m_player = AsParent().BirthAs(new Player());
 		m_playBg = AsParent().BirthAs(new PlayBg());
 		m_territory = AsParent().BirthAs(new TerrManager());
+#ifdef _DEBUG
+		AsParent().Birth(new TerrDebugger());
+#endif
 	}
 
 	void PlayManager::init()

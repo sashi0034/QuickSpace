@@ -29,12 +29,12 @@ namespace QuickSpace::Play
 		TerrEdge::ConnectEdges(e3, e4);
 		TerrEdge::ConnectEdges(e4, e1);
 
-		m_edgeList.push_back(e1);
-		m_edgeList.push_back(e2);
-		m_edgeList.push_back(e3);
-		m_edgeList.push_back(e4);
+		m_state.EdgeList.push_back(e1);
+		m_state.EdgeList.push_back(e2);
+		m_state.EdgeList.push_back(e3);
+		m_state.EdgeList.push_back(e4);
 
-		m_frontierFace = SepFace({SepEdge(e1), SepEdge(e2), SepEdge(e3), SepEdge(e4)});
+		m_state.FrontierFace = SepFace({SepEdge(e1), SepEdge(e2), SepEdge(e3), SepEdge(e4)});
 	}
 
 	void TerrManager::Update()
@@ -48,7 +48,7 @@ namespace QuickSpace::Play
 		drawTerritoryLines();
 
 		auto&& font = GameAsset::Instance().font16;
-		for (auto&& edge : m_edgeList)
+		for (auto&& edge : m_state.EdgeList)
 		{
 			font(edge->GetStart()).drawAt(edge->GetStart() + Point::Up(12));
 			font(edge->GetEnd()).drawAt(edge->GetEnd() + Point::Up(12));
@@ -67,7 +67,7 @@ namespace QuickSpace::Play
 		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyPolygon };
 
 		// 面描画
-		for (auto&& area : m_occupiedAreas)
+		for (auto&& area : m_state.OccupiedAreas)
 		{
 			auto color = Color{220, 64, 240, 224};
 			(void)area.draw(color);
@@ -79,14 +79,14 @@ namespace QuickSpace::Play
 		const float animAmp = Math::Sin(m_animCb->animRate * Math::Pi * 2.5f);
 		const int lineWidth =
 			ConstParam::LineWidth - static_cast<int>(4.5f * Math::Abs(animAmp));
-		for (auto&& edge : m_edgeList)
+		for (auto&& edge : m_state.EdgeList)
 		{
 			// 影
 			Line{edge->GetStart(), edge->GetEnd()}.draw(lineWidth + 2, Color{240, 122, 255});
 		}
 
 		// プレイヤーが書き込んでいる最中の辺
-		for (auto&& edge : m_edgeList)
+		for (auto&& edge : m_state.EdgeList)
 		{
 			if (edge->IsFixed()) continue;
 			const float brightness = 1 + (1 - Math::Abs(animAmp)) * 0.3f;
@@ -100,7 +100,7 @@ namespace QuickSpace::Play
 		Graphics2D::SetPSConstantBuffer(1, m_animCb);
 		const ScopedCustomShader2D shader{ GameAsset::Instance().psFantasyLine };
 
-		for (auto&& edge : m_edgeList)
+		for (auto&& edge : m_state.EdgeList)
 		{
 			if (edge->IsFixed() == false) continue;
 			const float brightness = 1 - (1 - Math::Abs(animAmp)) * 0.1f;
@@ -113,21 +113,36 @@ namespace QuickSpace::Play
 
 	Array<TerrEdgeRef>& TerrManager::Edges()
 	{
-		return m_edgeList;
+		return m_state.EdgeList;
 	}
 
 	SepFace& TerrManager::Frontier()
 	{
-		return m_frontierFace;
+		return m_state.FrontierFace;
 	}
 
 	void TerrManager::ResetFrontier(const SepFace& frontier)
 	{
-		m_frontierFace = frontier;
+		m_state.FrontierFace = frontier;
 	}
 
 	void TerrManager::AddOccupiedArea(SepEdgeSet edgeSet)
 	{
-		m_occupiedAreas.push_back(edgeSet.ConstructPolygon());
+		m_state.OccupiedAreas.push_back(edgeSet.ConstructPolygon());
+	}
+
+	const Array<Polygon>& TerrManager::OccupiedAreas() const
+	{
+		return m_state.OccupiedAreas;
+	}
+
+	TerrManagerState TerrManager::CopyState() const
+	{
+		return m_state;
+	}
+
+	void TerrManager::PasteState(const TerrManagerState& state)
+	{
+		m_state = state;
 	}
 }

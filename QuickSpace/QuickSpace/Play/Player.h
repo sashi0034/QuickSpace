@@ -16,6 +16,7 @@ namespace QuickSpace::Play
 	public:
 		Player();
 		void Init();
+		void Restart();
 		void Update() override;
 		float OrderPriority() override;
 		TerrEdgeRef& GetEdgeTarget();
@@ -23,9 +24,11 @@ namespace QuickSpace::Play
 		Float2 EdgeCursor() const;
 		bool IsMovingCursorNow() const;
 		Angle GetAngle() const;
+		float& MutSpeedBase();
 	private:
 		class PlayerAction;
 
+		float m_speedBase = 0.5f;
 		EPlayerState m_state = EPlayerState::Moving;
 		TerrEdgeRef m_edgeTarget{}; // 接触中の辺
 		Float2 m_edgeCursor{}; // プレイヤーのカーソル

@@ -14,6 +14,11 @@ namespace QuickSpace::Play
 
 	void Player::Init()
 	{
+		Restart();
+	}
+
+	void Player::Restart()
+	{
 		auto&& territory = PlayManager::Instance().Territory();
 		m_edgeTarget = territory.Edges()[0];
 		m_edgeCursor = m_edgeTarget->GetStart().xy();
@@ -50,7 +55,7 @@ namespace QuickSpace::Play
 
 	float Player::getSpeed() const
 	{
-		return Scene::DeltaTime() * 1000.0f * 0.5f;
+		return Scene::DeltaTime() * 1000.0f * m_speedBase;
 	}
 
 	void Player::changeEdgeTargetAutoAfterMoved()
@@ -192,29 +197,6 @@ namespace QuickSpace::Play
 			return;
 		}
 
-		// for (auto&& frontierEdge : PlayManager::Instance().Territory().Frontier().Edges())
-		// {
-		// 	auto&& frontierEdgeExtended = SepEdge(frontierEdge).ExtendBothTips(ConstParam::LineMargin - 1);
-		//
-		// 	if (frontierEdgeExtended.IsIntersectWith(cursorExtendedEdge) == false) continue;
-		// 	auto intersectedPoint = frontierEdgeExtended.CalcIntersected(cursorExtendedEdge);
-		// 	if (intersectedPoint == m_edgeTarget->GetStart()) continue;
-		//
-		// 	// 間接的にフロンティアが近くにあったら向きを回転して自動的に吸着
-		// 	// ここでは、上にあるコードにより線分本体にはあたらず、延長部分に当たるはず
-		// 	cursorExtendedEdge.ChangeEnd(intersectedPoint);
-		// 	m_edgeCursor = intersectedPoint;
-		// 	m_edgeTarget->ChangeEnd(intersectedPoint);
-		//
-		// 	m_drawnEdges.push_back(SepEdge(m_edgeTarget));
-		// 	continueDrawing(direction, m_edgeTarget->GetEnd()); // 結局終点を次行に変更するので、このdirectionは任意でよい
-		//
-		// 	m_edgeCursor =
-		// 		(frontierEdge.GetStart() - intersectedPoint).manhattanLength() < (frontierEdge.GetEnd() - intersectedPoint).manhattanLength()
-		// 		? frontierEdge.GetStart()
-		// 		: frontierEdge.GetEnd();
-		// 	m_edgeTarget->ChangeEnd(m_edgeCursor.asPoint());
-		// }
 	}
 
 
@@ -381,5 +363,10 @@ namespace QuickSpace::Play
 	Angle Player::GetAngle() const
 	{
 		return m_angle;
+	}
+
+	float& Player::MutSpeedBase()
+	{
+		return m_speedBase;
 	}
 }
