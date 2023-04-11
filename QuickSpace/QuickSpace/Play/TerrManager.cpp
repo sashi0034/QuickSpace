@@ -138,6 +138,7 @@ namespace QuickSpace::Play
 
 	TerrManagerState TerrManager::CopyState() const
 	{
+		// TODO: TerrEdgeにweak_ptr入ってるせいでちゃんとコピーできてないので修正　　
 		return m_state;
 	}
 

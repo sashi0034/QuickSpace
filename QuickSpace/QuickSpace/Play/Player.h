@@ -21,6 +21,7 @@ namespace QuickSpace::Play
 		float OrderPriority() override;
 		TerrEdgeRef& GetEdgeTarget();
 
+		void ForceMoveEdgeCursor(Float2 point);
 		Float2 EdgeCursor() const;
 		bool IsMovingCursorNow() const;
 		Angle GetAngle() const;

@@ -4,18 +4,22 @@
 
 namespace QuickSpace::Play
 {
-	class TerrDebugger : public ActorBase
+	class PlayDebugger : public ActorBase
 	{
 	public:
 		void Update() override;
 		float OrderPriority() override;
 	private:
 		void checkTerrHistory();
-		Vec2 getGuiPos(int column);
+		void stepGuiPos();
+		Vec2 getGuiPos();
 		void undoTerrHistory();
 		void redoTerrHistory();
+		void traceFrontierOutline(TerrManager& territory);
 
+		int m_guiPosIndex{};
 		Array<TerrManagerState> m_terrHistory{};
 		int m_terrHistoryIndex = 0;
+		bool m_isTraceFrontierOutline = true;
 	};
 }

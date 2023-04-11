@@ -22,6 +22,7 @@ namespace QuickSpace::Play
 		auto&& territory = PlayManager::Instance().Territory();
 		m_edgeTarget = territory.Edges()[0];
 		m_edgeCursor = m_edgeTarget->GetStart().xy();
+		m_state = EPlayerState::Moving;
 	}
 
 	void Player::Update()
@@ -265,9 +266,8 @@ namespace QuickSpace::Play
 	{
 		if (GameInput::Instance().Ok().pressed() == false) return false;
 		if (PlayManager::Instance().Territory().Frontier()
-			.IsPointInside(roundEdgeCursor() + Angle(angle).ToPoint()) == false) return false;
+			.JudgePointInside(roundEdgeCursor() + Angle(angle).ToPoint()) != true) return false;
 
-		// TODO: 線を引いてもいい場所かチェックする処理
 		// 線を引けるので開始
 		startDrawing(angle);
 		return true;
@@ -348,6 +348,11 @@ namespace QuickSpace::Play
 	TerrEdgeRef& Player::GetEdgeTarget()
 	{
 		return m_edgeTarget;
+	}
+
+	void Player::ForceMoveEdgeCursor(Float2 point)
+	{
+		m_edgeCursor = point;
 	}
 
 	Float2 Player::EdgeCursor() const

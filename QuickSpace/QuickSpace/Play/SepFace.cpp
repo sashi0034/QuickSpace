@@ -22,7 +22,7 @@ namespace QuickSpace::Play
 		return m_edges;
 	}
 
-	bool SepFace::IsPointInside(const Point& point)
+	Optional<bool> SepFace::JudgePointInside(const Point& point)
 	{
 		// 点からベクトル(1, 1)への半直線の交差回数が偶数であれば、点は外部にあると判断
 		bool isInside = false;
@@ -40,8 +40,11 @@ namespace QuickSpace::Play
 
 				const int intersectedX = point.x - point.y + edge.GetStart().y; // 方程式の計算結果から
 
+				// 端点と交わるときは判定不能扱いにする
+				if (edge.GetStart().x == intersectedX ||
+					edge.GetEnd().x == intersectedX) return none;
+
 				if (Util::RangeInt::FromSort(edge.GetStart().x, edge.GetEnd().x)
-					.ExtendRange(-1) // 交点が端点になるときは、垂直方向でチェックするようにする
 					.IsBetween(intersectedX) == false) continue;
 				// 交点のxが辺内にある
 
@@ -56,6 +59,10 @@ namespace QuickSpace::Play
 				// 点のyが直線よりも下かつ
 
 				const int intersectedY = -point.x + point.y + edge.GetStart().x; // 方程式の計算結果から
+
+				// 端点と交わるときは判定不能扱いにする
+				if (edge.GetStart().y == intersectedY ||
+					edge.GetEnd().y == intersectedY) return none;
 
 				if (Util::RangeInt::FromSort(edge.GetStart().y, edge.GetEnd().y)
 					.IsBetween(intersectedY) == false) continue;
