@@ -36,6 +36,7 @@ namespace QuickSpace
 		GameInput m_input{};
 		std::shared_ptr<PlayManager> m_playRoot{};
 
+		void testCase();
 		CoroTask performGame(CoroTaskYield& yield);
 
 		static std::unique_ptr<GameRoot> globalInstance;

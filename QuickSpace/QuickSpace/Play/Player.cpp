@@ -148,7 +148,7 @@ namespace QuickSpace::Play
 		auto dividedFrontier = tempFrontier.CalcRouteAsPureCircuit(m_drawnEdges.front().GetStart(), m_drawnEdges.back().GetEnd());
 
 		PlayManager::Instance().Territory().ResetFrontier(
-			SepFace(dividedFrontier.LongRoot.Edges().append(m_drawnEdges)));
+			SepFace::CreateClockwiseFace(dividedFrontier.LongRoot.Edges().append(m_drawnEdges)));
 		PlayManager::Instance().Territory().AddOccupiedArea(
 			SepEdgeSet(dividedFrontier.ShortRoot.Edges().append(m_drawnEdges)));
 

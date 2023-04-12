@@ -17,13 +17,18 @@ namespace QuickSpace::Play
 		SepEdgeSetTwoRoot CalcRouteAsPureCircuit(const Point& startPoint, const Point& endPoint);
 
 		Array<SepEdge>& Edges();
-		Polygon ConstructPolygon();
+		SepEdgeSet CreateClockwiseCircuit();
+		Polygon ConstructPolygon() const;
+
+		static void TestCase();
 	private:
 		Array<SepEdge> m_edges{};
 
 		void followAndConnectEdges(SepEdgeSet* routeRef, Array<bool>* checkedFlags, const Point& endPoint, bool canFinishAtFrontEdge);
 		int sumEdgeDistance();
-		bool isClockwiseAsCircuit() const;
+		bool isClockwiseAsCircuit();
+
+		static void testClockwise(Array<Point> points, bool isClockwise);
 	};
 
 	struct SepEdgeSetTwoRoot

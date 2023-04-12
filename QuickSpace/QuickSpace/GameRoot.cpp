@@ -1,6 +1,7 @@
 ﻿#include "../stdafx.h"
 #include "GameRoot.h"
 #include "Play/PlayManager.h"
+#include "Play/SepEdgeSet.h"
 #include "Test/Demos.h"
 
 namespace QuickSpace
@@ -29,6 +30,9 @@ namespace QuickSpace
 
 	void GameRoot::StartGame()
 	{
+#if _DEBUG
+		testCase();
+#endif
 		m_coroutineManager.Start([this](auto&& yield){performGame(yield);});
 	}
 
@@ -61,6 +65,11 @@ namespace QuickSpace
 	GameInput& GameRoot::GetInput()
 	{
 		return m_input;
+	}
+
+	void GameRoot::testCase()
+	{
+		Play::SepEdgeSet::TestCase();
 	}
 
 	CoroTask GameRoot::performGame(CoroTaskYield& yield)

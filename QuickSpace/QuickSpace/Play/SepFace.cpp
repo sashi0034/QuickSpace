@@ -1,12 +1,14 @@
 ﻿#include "stdafx.h"
 #include "SepFace.h"
 
+#include "SepEdgeSet.h"
+
 namespace QuickSpace::Play
 {
-	SepFace::SepFace(const Array<SepEdge>& edges)
-	{
-		m_edges = edges;
-	}
+	// SepFace::SepFace(const Array<SepEdge>& edges)
+	// {
+	// 	m_edges = edges;
+	// }
 
 	Optional<SepEdge> SepFace::IntersectWith(const SepEdge& targetEdge)
 	{
@@ -73,5 +75,20 @@ namespace QuickSpace::Play
 			}
 		}
 		return isInside;
+	}
+
+	SepFace SepFace::CreateClockwiseFace(SepEdgeSet& edgeSet)
+	{
+		return CreateClockwiseFace(edgeSet.Edges());
+	}
+
+	SepFace SepFace::CreateClockwiseFace(const Array<SepEdge>& edges)
+	{
+		auto clockwise = SepEdgeSet(edges).CreateClockwiseCircuit();
+
+		auto result = SepFace();
+		result.m_edges = std::move(clockwise.Edges());
+
+		return result;
 	}
 }

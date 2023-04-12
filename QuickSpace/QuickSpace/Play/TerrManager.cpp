@@ -43,7 +43,7 @@ namespace QuickSpace::Play
 		m_state.EdgeList.push_back(e3);
 		m_state.EdgeList.push_back(e4);
 
-		m_state.FrontierFace = SepFace({SepEdge(e1), SepEdge(e2), SepEdge(e3), SepEdge(e4)});
+		m_state.FrontierFace = SepFace::CreateClockwiseFace({SepEdge(e1), SepEdge(e2), SepEdge(e3), SepEdge(e4)});
 	}
 
 	void TerrManager::Update()
@@ -152,7 +152,7 @@ namespace QuickSpace::Play
 
 	void TerrManager::AddOccupiedArea(SepEdgeSet edgeSet)
 	{
-		m_state.OccupiedAreas.push_back(edgeSet.ConstructPolygon());
+		m_state.OccupiedAreas.push_back(edgeSet.CreateClockwiseCircuit().ConstructPolygon());
 	}
 
 	const Array<Polygon>& TerrManager::OccupiedAreas() const

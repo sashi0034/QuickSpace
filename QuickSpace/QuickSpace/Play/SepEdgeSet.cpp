@@ -5,6 +5,35 @@
 
 namespace QuickSpace::Play
 {
+	void SepEdgeSet::TestCase()
+	{
+		testClockwise(
+			Array<Point>{
+			  {862, 160}, {862, 627}, {912, 627}, {912, 160}},
+			 false);
+		testClockwise(
+			Array<Point>{
+			  {862, 85}, {862, 627}, {912, 627}, {912, 156},{1198, 156},
+			  {1198, 85}},
+			 false);
+		testClockwise(
+			Array<Point>{
+	          {862, 160}, {862, 627}, {912, 627}, {912, 156},{1198, 156},
+	          {1198, 60},{1012, 60}, {1012, 85}, {895, 85}, {895, 160}},
+	         false);
+	}
+
+	void SepEdgeSet::testClockwise(Array<Point> points, bool isClockwise)
+	{
+		SepEdgeSet edgeSet{};
+		for (int i1=0; i1<points.size(); ++i1)
+		{
+			const int i2 = (i1 + 1) % points.size();
+			edgeSet.Edges().push_back(SepEdge(points[i1], points[i2]));
+		}
+		assert(edgeSet.isClockwiseAsCircuit() == isClockwise);
+	}
+
 	SepEdgeSet::SepEdgeSet(const Array<SepEdge>& edges) :
 		m_edges(edges)
 	{}
@@ -77,9 +106,9 @@ namespace QuickSpace::Play
 		return m_edges;
 	}
 
-	Polygon SepEdgeSet::ConstructPolygon()
+	SepEdgeSet SepEdgeSet::CreateClockwiseCircuit()
 	{
-		if (m_edges.size() == 0) return Polygon{};
+		if (m_edges.size() == 0) return *this;
 
 		SepEdgeSet sortedSet{};
 		auto checkedFlags = Array<bool>(m_edges.size());
@@ -96,7 +125,7 @@ namespace QuickSpace::Play
 		// 各辺の始点と終点がつながるように
 		for (int i1=0; i1 <= sortedSet.m_edges.size() - 1; ++i1)
 		{
-			int i2 = (i1 + 1) % sortedSet.m_edges.size();
+			const int i2 = (i1 + 1) % sortedSet.m_edges.size();
 			if (sortedSet.m_edges[i1].GetStart() == sortedSet.m_edges[i2].GetStart() ||
 				sortedSet.m_edges[i1].GetStart() == sortedSet.m_edges[i2].GetEnd())
 				sortedSet.m_edges[i1].SwapStartAndEnd();
@@ -109,8 +138,13 @@ namespace QuickSpace::Play
 			for (auto&& edge : sortedSet.m_edges) edge.SwapStartAndEnd();
 		}
 
+		return sortedSet;
+	}
+
+	Polygon SepEdgeSet::ConstructPolygon() const
+	{
 		const auto polygonPoints =
-			sortedSet.m_edges.map([](SepEdge edge){ return Vec2(edge.GetStart().xy()); });
+			m_edges.map([](SepEdge edge){ return Vec2(edge.GetStart().xy()); });
 
 		return Polygon(polygonPoints);
 	}
@@ -125,17 +159,24 @@ namespace QuickSpace::Play
 		return sum;
 	}
 
-	bool SepEdgeSet::isClockwiseAsCircuit() const
+	bool SepEdgeSet::isClockwiseAsCircuit()
 	{
-		int sum = 0;
+		// 左端の垂直方向の辺が上向きかどうかで時計回りを判定
+
+		int mostLeftIndex = -1;
 		for (int i=0; i<m_edges.size(); ++i)
 		{
-			const auto vec1 = m_edges[i].GetVec();
-			const auto vec2 = m_edges[(i + 1) % m_edges.size()].GetVec();
+			if (m_edges[i].IsHorizontal()) continue;
 
-			sum += vec1.x * (-vec2.y) - (-vec1.y) * vec2.x;
+			const bool isUpdate = mostLeftIndex == -1 ||
+				(m_edges[i].GetStart().x < m_edges[mostLeftIndex].GetStart().x);
+			if (isUpdate == false) continue;
+
+			mostLeftIndex = i;
 		}
-		return sum < 0;
+		assert(mostLeftIndex != -1);
+		if (mostLeftIndex == -1) return false;
+		return m_edges[mostLeftIndex].GetDirection().Value() == EAngle::Up;
 	}
 
 	void SepEdgeSet::followAndConnectEdges(
