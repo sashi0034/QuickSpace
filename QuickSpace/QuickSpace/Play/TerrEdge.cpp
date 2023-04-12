@@ -89,12 +89,12 @@ namespace QuickSpace::Play
 		if (IsHorizontal())
 		{
 			cursor->y = m_startPos.y;
-			cursor->x = Util::RangeInt::FromSort(m_startPos.x, m_endPos.x).Clamp(cursor->x);
+			cursor->x = Util::RangeF::FromSort(m_startPos.x, m_endPos.x).Clamp(cursor->x);
 		}
 		else
 		{
 			cursor->x = m_startPos.x;
-			cursor->y = Util::RangeInt::FromSort(m_startPos.y, m_endPos.y).Clamp(cursor->y);
+			cursor->y = Util::RangeF::FromSort(m_startPos.y, m_endPos.y).Clamp(cursor->y);
 		}
 	}
 
