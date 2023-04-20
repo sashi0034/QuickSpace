@@ -2,6 +2,7 @@
 #include "GameRoot.h"
 #include "Play/PlayManager.h"
 #include "Play/SepEdgeSet.h"
+#include "Play/SepFace.h"
 #include "Test/Demos.h"
 
 namespace QuickSpace
@@ -69,7 +70,8 @@ namespace QuickSpace
 
 	void GameRoot::testCase()
 	{
-		Play::SepEdgeSet::TestCase();
+		SepEdgeSet::TestCase();
+		SepFace::TestCase();
 	}
 
 	CoroTask GameRoot::performGame(CoroTaskYield& yield)

@@ -5,10 +5,31 @@
 
 namespace QuickSpace::Play
 {
-	// SepFace::SepFace(const Array<SepEdge>& edges)
-	// {
-	// 	m_edges = edges;
-	// }
+	void SepFace::TestCase()
+	{
+		// 以下の形状の図形を想定
+		// ----------
+		// |        |
+		// -----    -----
+		//     |        |
+		//     ----------
+
+		auto face = CreateClockwiseFace(SepEdgeSet::CreateFromVertexes(Array{
+			TerrVertex{100, 100},
+			TerrVertex{300, 100},
+			TerrVertex{300, 200},
+			TerrVertex{400, 200},
+			TerrVertex{400, 300},
+			TerrVertex{200, 300},
+			TerrVertex{200, 200},
+			TerrVertex{100, 200},
+		}).Edges());
+
+		assert(face.JudgePointInside(Point{150, 75}) == false);
+		assert(face.JudgePointInside(Point{125, 150}) == true);
+		// assert(face.JudgePointInside(Point{0, 0}) == false);
+		// assert(face.JudgePointInside(Point{250, 250}) == true);
+	}
 
 	Optional<SepEdge> SepFace::IntersectWith(const SepEdge& targetEdge)
 	{

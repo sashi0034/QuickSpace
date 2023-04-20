@@ -5,6 +5,7 @@ namespace QuickSpace::Play
 {
 	class SepEdgeSet;
 
+	// 時計回りになるように辺が構成された面
 	class SepFace
 	{
 	public:
@@ -15,6 +16,7 @@ namespace QuickSpace::Play
 		Optional<bool> JudgePointInside(const Point& point);
 		static SepFace CreateClockwiseFace(SepEdgeSet& edgeSet);
 		static SepFace CreateClockwiseFace(const Array<SepEdge>& edges);
+		static void TestCase();
 	private:
 		Array<SepEdge> m_edges{};
 	};

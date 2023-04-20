@@ -20,7 +20,9 @@ namespace QuickSpace::Play
 		SepEdgeSet CreateClockwiseCircuit();
 		Polygon ConstructPolygon() const;
 
+		static SepEdgeSet CreateFromVertexes(const Array<Point>& points);
 		static void TestCase();
+
 	private:
 		Array<SepEdge> m_edges{};
 
@@ -28,7 +30,7 @@ namespace QuickSpace::Play
 		int sumEdgeDistance();
 		bool isClockwiseAsCircuit();
 
-		static void testClockwise(Array<Point> points, bool isClockwise);
+		static void testClockwise(const Array<Point>& points, bool isClockwise);
 	};
 
 	struct SepEdgeSetTwoRoot

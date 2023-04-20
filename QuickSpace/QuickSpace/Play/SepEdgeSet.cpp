@@ -23,14 +23,20 @@ namespace QuickSpace::Play
 	         false);
 	}
 
-	void SepEdgeSet::testClockwise(Array<Point> points, bool isClockwise)
+	SepEdgeSet SepEdgeSet::CreateFromVertexes(const Array<Point>& points)
 	{
-		SepEdgeSet edgeSet{};
+		SepEdgeSet edgeSet = {};
 		for (int i1=0; i1<points.size(); ++i1)
 		{
 			const int i2 = (i1 + 1) % points.size();
 			edgeSet.Edges().push_back(SepEdge(points[i1], points[i2]));
 		}
+		return edgeSet;
+	}
+
+	void SepEdgeSet::testClockwise(const Array<Point>& points, bool isClockwise)
+	{
+		SepEdgeSet edgeSet = CreateFromVertexes(points);
 		assert(edgeSet.isClockwiseAsCircuit() == isClockwise);
 	}
 
