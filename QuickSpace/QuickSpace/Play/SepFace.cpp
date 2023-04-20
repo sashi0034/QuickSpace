@@ -27,8 +27,8 @@ namespace QuickSpace::Play
 
 		assert(face.JudgePointInside(Point{150, 75}) == false);
 		assert(face.JudgePointInside(Point{125, 150}) == true);
-		// assert(face.JudgePointInside(Point{0, 0}) == false);
-		// assert(face.JudgePointInside(Point{250, 250}) == true);
+		assert(face.JudgePointInside(Point{0, 0}) == false);
+		assert(face.JudgePointInside(Point{150, 150}) == true);
 	}
 
 	Optional<SepEdge> SepFace::IntersectWith(const SepEdge& targetEdge)
@@ -47,7 +47,17 @@ namespace QuickSpace::Play
 
 	Optional<bool> SepFace::JudgePointInside(const Point& point)
 	{
-		// 点からベクトル(1, 1)への半直線の交差回数が偶数であれば、点は外部にあると判断
+		for (int i=0; i<static_cast<int>(JudgingLine::Max); ++i)
+		{
+			auto result = judgePointInsidePartial(point, static_cast<JudgingLine>(i));
+			if (result != none) return result;
+		}
+		return none;
+	}
+
+	Optional<bool> SepFace::judgePointInsidePartial(const Point& point, JudgingLine judgingLine)
+	{
+		// 点からベクトル(1, 1)などへの半直線の交差回数が偶数であれば、点は外部にあると判断
 		bool isInside = false;
 		for (auto&& edge : m_edges)
 		{
@@ -58,10 +68,15 @@ namespace QuickSpace::Play
 			{
 				// 水平かつ
 
-				if ((point.y < edge.GetStart().y) == false) continue;
-				// 点のyが直線よりも下かつ
+				if (judgingLine == Right_Down || judgingLine == Left_Down
+					? (point.y < edge.GetStart().y) == false
+					: (point.y > edge.GetStart().y) == false) continue;
+				// 点のyが直線よりも下などかつ
 
-				const int intersectedX = point.x - point.y + edge.GetStart().y; // 方程式の計算結果から
+				const int intersectedX = judgingLine == Right_Down || judgingLine == Left_Up
+					// 方程式の計算結果から
+					? point.x - point.y + edge.GetStart().y
+					: point.x + point.y - edge.GetStart().y;
 
 				// 端点と交わるときは判定不能扱いにする
 				if (edge.GetStart().x == intersectedX ||
@@ -78,10 +93,15 @@ namespace QuickSpace::Play
 			{
 				// 垂直かつ
 
-				if ((point.x < edge.GetStart().x) == false) continue;
-				// 点のyが直線よりも下かつ
+				if (judgingLine == Right_Down || judgingLine == Right_Up
+					? (point.x < edge.GetStart().x) == false
+					: (point.x > edge.GetStart().x) == false) continue;
+				// 点のxが直線よりも左などかつ
 
-				const int intersectedY = -point.x + point.y + edge.GetStart().x; // 方程式の計算結果から
+				const int intersectedY = judgingLine == Right_Down || judgingLine == Left_Up
+					// 方程式の計算結果から
+					? -point.x + point.y + edge.GetStart().x
+					: point.x + point.y - edge.GetStart().x;
 
 				// 端点と交わるときは判定不能扱いにする
 				if (edge.GetStart().y == intersectedY ||

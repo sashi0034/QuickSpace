@@ -19,5 +19,15 @@ namespace QuickSpace::Play
 		static void TestCase();
 	private:
 		Array<SepEdge> m_edges{};
+
+		enum JudgingLine
+		{
+			Right_Down,
+			Right_Up,
+			Left_Down,
+			Left_Up,
+			Max
+		};
+		Optional<bool> judgePointInsidePartial(const Point& point, JudgingLine judgingLine);
 	};
 }
