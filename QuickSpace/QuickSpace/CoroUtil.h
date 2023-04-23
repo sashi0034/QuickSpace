@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CoroManager.h"
+#include "CoroActor.h"
 
 namespace QuickSpace
 {
@@ -8,6 +8,6 @@ namespace QuickSpace
 		CoroTask WaitForTime(CoroTaskYield& yield, double seconds);
 		CoroTask WaitForTrue(CoroTaskYield& yield, const std::function<bool()>& discriminant);
 		CoroTask WaitForFalse(CoroTaskYield& yield, const std::function<bool()>& discriminant);
-		CoroTask WaitForCoro(CoroTaskYield& yield, std::shared_ptr<CoroElem> coro);
+		CoroTask WaitForCoro(CoroTaskYield& yield, std::shared_ptr<CoroActor> coro);
 	};
 }

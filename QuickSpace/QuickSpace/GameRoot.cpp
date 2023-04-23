@@ -34,23 +34,17 @@ namespace QuickSpace
 #if _DEBUG
 		testCase();
 #endif
-		m_coroutineManager.Start([this](auto&& yield){performGame(yield);});
+		m_actorManager.StartCoro([this](auto&& yield){performGame(yield);});
 	}
 
 	void GameRoot::Update()
 	{
 		m_actorManager.Update();
-		m_coroutineManager.Update();
 	}
 
 	ActorManager& GameRoot::GetActorManager()
 	{
 		return m_actorManager;
-	}
-
-	CoroManager& GameRoot::GetCoroutineManager()
-	{
-		return m_coroutineManager;
 	}
 
 	GameAsset& GameRoot::GetAsset()

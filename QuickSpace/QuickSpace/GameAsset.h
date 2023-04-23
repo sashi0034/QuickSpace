@@ -22,7 +22,7 @@ namespace QuickSpace
 		REGISTER_GAMEASSET_PNG(tex_aqua_noise);
 		REGISTER_GAMEASSET_PNG(tex_cosmos_noise);
 		REGISTER_GAMEASSET_PNG(tex_water_bubbles);
-		// REGISTER_GAMEASSET_PNG(tex_savannah)
+		REGISTER_GAMEASSET_PNG(temple_knight_side_32x32);
 
 		const Font font16{ 16 };
 		const Font font24{ 24 };

@@ -23,6 +23,6 @@ namespace QuickSpace
 	private:
 		bool m_isActive = true;
 		bool m_isAlive = true;
-		std::unique_ptr<ActorManager> m_children;
+		std::unique_ptr<ActorManager> m_children{};
 	};
 }

@@ -1,9 +1,11 @@
 ﻿#pragma once
 #include "ActorBase.h"
+#include "CoroTask.h"
 
 namespace QuickSpace
 {
 	class ActorBase;
+	class CoroActor;
 
 	class ActorManager
 	{
@@ -18,6 +20,7 @@ namespace QuickSpace
 			m_actorList.push_back(product);
 			return product;
 		}
+		std::shared_ptr<CoroActor> StartCoro(CoroTaskFunc coro);
 	private:
 		std::vector<std::shared_ptr<ActorBase>> m_actorList{};
 		void sortActorList();

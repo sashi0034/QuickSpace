@@ -2,7 +2,7 @@
 #include "PlayBg.h"
 
 #include "QuickSpace/ConstParam.h"
-#include "QuickSpace/CoroManager.h"
+#include "QuickSpace/CoroActor.h"
 #include "QuickSpace/GameAsset.h"
 #include "QuickSpace/Util/Utils.h"
 using namespace AngelScript;
@@ -81,7 +81,7 @@ namespace QuickSpace::Play
 			// リロード処理
 			if (m_script.reload() == false)
 			{
-				CoroManager::Global().Start([this](auto&& yield)
+				AsParent().StartCoro([this](auto&& yield)
 				{
 					for (double time = 0; time < 5.0; time += Scene::DeltaTime())
 					{

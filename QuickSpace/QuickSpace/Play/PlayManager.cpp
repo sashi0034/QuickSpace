@@ -31,7 +31,7 @@ namespace QuickSpace::Play
 	{
 		init();
 
-		CoroManager::Global().Start([&](auto&& yield){performPlay(yield);});
+		AsParent().StartCoro([&](auto&& yield){performPlay(yield);});
 	}
 
 	void PlayManager::Update()

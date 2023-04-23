@@ -50,4 +50,10 @@ namespace QuickSpace
 	{
 		m_actorList.push_back(std::shared_ptr<ActorBase>(actor));
 	}
+
+	std::shared_ptr<CoroActor> ActorManager::StartCoro(CoroTaskFunc coro)
+	{
+		return BirthAs(new CoroActor(coro));
+	}
+
 }

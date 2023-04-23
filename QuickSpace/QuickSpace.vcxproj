@@ -123,9 +123,10 @@
     <ClCompile Include="QuickSpace\ActorBase.cpp" />
     <ClCompile Include="QuickSpace\ActorManager.cpp" />
     <ClCompile Include="QuickSpace\ConstParam.cpp" />
+    <ClCompile Include="QuickSpace\CoroTask.cpp" />
     <ClCompile Include="QuickSpace\GameAsset.cpp" />
     <ClCompile Include="QuickSpace\CoroUtil.cpp" />
-    <ClCompile Include="QuickSpace\CoroManager.cpp">
+    <ClCompile Include="QuickSpace\CoroActor.cpp">
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
@@ -206,6 +207,7 @@
     <ClCompile Include="QuickSpace\GameInput.cpp" />
     <ClCompile Include="QuickSpace\GameRoot.cpp" />
     <ClCompile Include="QuickSpace\Play\Angle.cpp" />
+    <ClCompile Include="QuickSpace\Play\EnemyManager.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayBg.cpp" />
     <ClCompile Include="QuickSpace\Play\Player.cpp" />
     <ClCompile Include="QuickSpace\Play\PlayerAction.cpp" />
@@ -575,12 +577,14 @@
     <ClInclude Include="QuickSpace\ActorBase.h" />
     <ClInclude Include="QuickSpace\ActorManager.h" />
     <ClInclude Include="QuickSpace\ConstParam.h" />
+    <ClInclude Include="QuickSpace\CoroTask.h" />
     <ClInclude Include="QuickSpace\GameAsset.h" />
     <ClInclude Include="QuickSpace\CoroUtil.h" />
-    <ClInclude Include="QuickSpace\CoroManager.h" />
+    <ClInclude Include="QuickSpace\CoroActor.h" />
     <ClInclude Include="QuickSpace\GameInput.h" />
     <ClInclude Include="QuickSpace\GameRoot.h" />
     <ClInclude Include="QuickSpace\Play\Angle.h" />
+    <ClInclude Include="QuickSpace\Play\EnemyManager.h" />
     <ClInclude Include="QuickSpace\Play\PlayBg.h" />
     <ClInclude Include="QuickSpace\Play\Player.h" />
     <ClInclude Include="QuickSpace\Play\PlayerAction.h" />
@@ -679,6 +683,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\asset\image\temple_knight_side_32x32.png" />
     <Content Include="App\asset\image\tex_water_bubbles.png" />
     <Content Include="App\asset\image\tex_aqua_noise.png" />
     <Content Include="App\asset\image\bg_savannah.png" />
@@ -693,6 +698,9 @@
     <Content Include="App\asset\image\thin_weed_16x16.png" />
     <Content Include="App\asset\image\tree_16x16.png" />
     <Content Include="App\asset\script\Bg1.as" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="QuickSpace\Play\En\" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

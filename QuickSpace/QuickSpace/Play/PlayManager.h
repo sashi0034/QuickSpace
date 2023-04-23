@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "../ActorBase.h"
-#include "QuickSpace/CoroManager.h"
+#include "QuickSpace/CoroActor.h"
 
 namespace QuickSpace::Play
 {

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "../ActorBase.h"
-#include "../CoroManager.h"
+#include "../CoroActor.h"
 
 namespace QuickSpace::Demos
 {
@@ -54,7 +54,7 @@ namespace QuickSpace::Demos
 		CoroTask TestCoro2(CoroTaskYield& yield);
 	private:
 		const Texture emoji{ U"🐣"_emoji };
-		std::shared_ptr<CoroElem> m_task;
+		std::shared_ptr<CoroActor> m_task;
 	};
 
 	class Demo4 : public ActorBase

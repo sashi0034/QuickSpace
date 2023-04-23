@@ -92,8 +92,8 @@ void QuickSpace::Demos::Demo2::Update()
 
 QuickSpace::Demos::Demo3::Demo3()
 {
-	m_task = GameRoot::Global().GetCoroutineManager().Start([&](auto&& yield){TestCoro1(yield, 12); });
-	GameRoot::Global().GetCoroutineManager().Start([&](auto&& yield){TestCoro2(yield); });
+	m_task = ActorManager::Global().StartCoro([&](auto&& yield){TestCoro1(yield, 12); });
+	ActorManager::Global().StartCoro([&](auto&& yield){TestCoro2(yield); });
 }
 
 void QuickSpace::Demos::Demo3::Update()

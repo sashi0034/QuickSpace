@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "ActorManager.h"
-#include "CoroManager.h"
+#include "CoroActor.h"
 #include "GameAsset.h"
 #include "GameInput.h"
 
@@ -25,13 +25,11 @@ namespace QuickSpace
 		void Update();
 
 		ActorManager& GetActorManager();
-		CoroManager& GetCoroutineManager();
 		GameAsset& GetAsset();
 		PlayManager& GetPlayRoot();
 		GameInput& GetInput();
 	private:
 		ActorManager m_actorManager{};
-		CoroManager m_coroutineManager{};
 		GameAsset m_asset{};
 		GameInput m_input{};
 		std::shared_ptr<PlayManager> m_playRoot{};
