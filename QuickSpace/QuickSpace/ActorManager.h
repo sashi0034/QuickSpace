@@ -21,6 +21,7 @@ namespace QuickSpace
 			return product;
 		}
 		std::shared_ptr<CoroActor> StartCoro(CoroTaskFunc coro);
+		std::vector<std::shared_ptr<ActorBase>>& ActorList();
 	private:
 		std::vector<std::shared_ptr<ActorBase>> m_actorList{};
 		void sortActorList();

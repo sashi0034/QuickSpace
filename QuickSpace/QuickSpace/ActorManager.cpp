@@ -56,4 +56,8 @@ namespace QuickSpace
 		return BirthAs(new CoroActor(coro));
 	}
 
+	std::vector<std::shared_ptr<ActorBase>>& ActorManager::ActorList()
+	{
+		return m_actorList;
+	}
 }

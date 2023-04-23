@@ -20,6 +20,7 @@ namespace QuickSpace
 
 	void CoroActor::Update()
 	{
+		ActorBase::Update();
 		if ((*m_task)())
 			{}
 		else
