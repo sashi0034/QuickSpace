@@ -5,8 +5,6 @@ namespace QuickSpace::Play
 {
 	void EnemyManager::Update()
 	{
-		const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
-
 		ActorBase::Update();
 	}
 
