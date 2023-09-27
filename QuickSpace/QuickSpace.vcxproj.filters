@@ -156,9 +156,6 @@
     <ClCompile Include="QuickSpace\CoroUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QuickSpace\CoroManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="QuickSpace\GameRoot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -166,6 +163,69 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QuickSpace\Test\Demos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\ConstParam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\CoroTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\CoroActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\GameInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\Angle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\EnemyBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\EnemyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\En\EnKnightNormal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\PlayBg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\PlayerAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\SepEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\SepEdgeSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\SepFace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\PlayDebugger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\StageBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\Stage\Stage0.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\TerrEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Play\TerrManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Util\Range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSpace\Util\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -756,6 +816,8 @@
     <None Include="App\engine\font\min\siv3d-min.woff">
       <Filter>Resource Files\engine\font\min</Filter>
     </None>
+    <None Include="App\asset\shader\fantasy_line.hlsl" />
+    <None Include="App\asset\shader\fantasy_polygon.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="App\example\test.mp3">
@@ -812,9 +874,6 @@
     <ClInclude Include="QuickSpace\CoroUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QuickSpace\CoroManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="QuickSpace\GameRoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -822,6 +881,69 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QuickSpace\Test\Demos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\ConstParam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\CoroTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\CoroActor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\GameInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\Angle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\EnemyBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\EnemyManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\En\EnKnightNormal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\PlayBg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\PlayerAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\SepEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\SepEdgeSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\SepFace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\PlayDebugger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\StageBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\Stage\Stage0.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\TerrEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Play\TerrManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Util\Range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSpace\Util\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
